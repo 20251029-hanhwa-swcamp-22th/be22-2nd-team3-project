@@ -1,6 +1,6 @@
 package com.ohgiraffers.hw22thteamproject.user.domain;
 
-import com.ohgiraffers.hw22thteamproject.BaseTime;
+import com.ohgiraffers.hw22thteamproject.common.BaseTime;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

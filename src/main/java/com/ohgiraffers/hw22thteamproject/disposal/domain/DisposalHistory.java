@@ -1,6 +1,6 @@
 package com.ohgiraffers.hw22thteamproject.disposal.domain;
 
-import com.ohgiraffers.hw22thteamproject.BaseTime;
+import com.ohgiraffers.hw22thteamproject.common.BaseTime;
 import com.ohgiraffers.hw22thteamproject.ingredientstock.domain.IngredientStock;
 import com.ohgiraffers.hw22thteamproject.user.domain.User;
 import jakarta.persistence.*;
