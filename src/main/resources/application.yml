@@ -1,3 +1,24 @@
 spring:
-  application:
-    name: hw-22th-team-project
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/fridge
+    username: swcamp
+    password: swcamp
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    properties:
+      hibernate:
+        format_sql: true
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: mappers/**/*.xml
+  type-aliases-package: com.ohgiraffers.hw22thteamproject.user.query.dto,
+                        com.ohgiraffers.hw22thteamproject.recipe.query.dto,
+                        com.ohgiraffers.hw22thteamproject.notification.query.dto,
+                        com.ohgiraffers.hw22thteamproject.ingredientstock.query.dto,
