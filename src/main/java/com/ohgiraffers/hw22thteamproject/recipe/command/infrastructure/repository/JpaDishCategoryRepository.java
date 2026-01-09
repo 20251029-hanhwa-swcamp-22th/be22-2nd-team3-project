@@ -4,6 +4,5 @@ import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.DishCat
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.DishCategoryRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface JpaDishCategoryRepository extends DishCategoryRepository, JpaRepository<DishCategory,Long> {
-
+public interface JpaDishCategoryRepository extends DishCategoryRepository, JpaRepository<DishCategory,Integer> {
 }
