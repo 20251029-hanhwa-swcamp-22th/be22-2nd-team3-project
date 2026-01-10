@@ -10,4 +10,12 @@ public interface UserRepository {
     User save(User user);
 
     Optional<User> findByUserId(String userId);
+
+    boolean existsByUserId(String userId);
+
+    boolean existsByNickname(String nickname);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByPhoneNum(String phoneNum);
 }

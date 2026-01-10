@@ -1,3 +1,6 @@
+### Constants.java
+- global constants collection
+
 ### ModelMapperConfig.java
 
 - MatchingStrategies.STRICT
@@ -10,3 +13,4 @@
 ### SecurityConfig.java
 - @EnableWebSecurity
 - @EnableMethodSecurity
+

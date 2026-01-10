@@ -7,10 +7,10 @@ POST http://localhost:8080/api/v1/users
 Content-Type: application/json
 
 {
-  "userId": "sinwooID",
-  "password": "sinwooPWD",
-  "nickname": "sasd111",
+  "userId": "testuserID01",
+  "password": "testUserPWD#",
+  "nickname": "HOLYSHIT",
   "email": "rlatlsdn98@gmail.com",
-  "phoneNum": "01076117026",
+  "phoneNum": "01012345678",
   "birthdate": "1998-01-12"
 }
