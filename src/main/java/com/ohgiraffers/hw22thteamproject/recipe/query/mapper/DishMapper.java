@@ -1,11 +1,13 @@
 package com.ohgiraffers.hw22thteamproject.recipe.query.mapper;
 
+import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.Dish;
 import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.DishDTO;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface DishMapper {
@@ -15,7 +17,7 @@ public interface DishMapper {
 	 * @param dishNo 요리 번호
 	 * @return 요리 상세 정보 DTO
 	 */
-	DishDTO selectDishById(int dishNo);
+	Optional<DishDTO> selectDishById(int dishNo);
 
 	/**
 	 * 특정 사용자 번호를 기준으로 해당 사용자가 등록한 모든 요리 목록을 조회합니다.

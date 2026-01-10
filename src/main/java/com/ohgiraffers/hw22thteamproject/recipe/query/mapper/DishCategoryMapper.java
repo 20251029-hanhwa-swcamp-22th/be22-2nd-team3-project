@@ -5,6 +5,7 @@ import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.DishCategoryD
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface DishCategoryMapper {
@@ -14,7 +15,7 @@ public interface DishCategoryMapper {
 	 * @param dishCategoryNo 요리 카테고리 번호
 	 * @return 요리 카테고리 상세 정보 DTO
 	 */
-	DishCategoryDTO selectDishCategoryById(int dishCategoryNo);
+	Optional<DishCategoryDTO> selectDishCategoryById(int dishCategoryNo);
 
 	/**
 	 * 등록된 모든 요리 카테고리 목록을 조회합니다.
