@@ -1,2 +1,16 @@
 ### UserID를 사용한 회원 정보 조회
 GET http://localhost:8080/api/v1/users/gusgh075
+
+
+### 회원 가입
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "userId": "sinwooID",
+  "password": "sinwooPWD",
+  "nickname": "sasd111",
+  "email": "rlatlsdn98@gmail.com",
+  "phoneNum": "01076117026",
+  "birthdate": "1998-01-12"
+}
