@@ -17,9 +17,9 @@ public class RecipeCreateRequest {
     
     @NotNull(message = "카테고리 번호는 필수입니다.")
     private Integer dishCategoryNo;
-    
-    @NotNull(message = "사용자 번호는 필수입니다.")
-    private Long userNo;
+
+    @NotNull(message = "사용자 아이디는 필수입니다.")
+    private String userId;
 
     private List<RecipeStepRequest> recipes; // 조리 단계 목록
 

@@ -33,7 +33,7 @@ public class RecipeCommandService {
 	@Transactional
 	public Integer registRecipe(RecipeCreateRequest request) {
 
-		UserDTO userDTO = userMapper.selectUserByUserId(/*request.getUserNo()*/"1");
+		UserDTO userDTO = userMapper.selectUserByUserId(request.getUserId());
 		// .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
 		DishCategoryDTO dishCategoryDTO = dishCategoryMapper.selectDishCategoryById(request.getDishCategoryNo())
