@@ -2,7 +2,8 @@ package com.ohgiraffers.hw22thteamproject.recipe.command.infrastructure.reposito
 
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.DishCategory;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.DishCategoryRepository;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface JpaDishCategoryRepository extends DishCategoryRepository, JpaRepository<DishCategory,Integer> {
+public interface JpaDishCategoryRepository extends DishCategoryRepository, JpaRepository<DishCategory, Integer> {
 }

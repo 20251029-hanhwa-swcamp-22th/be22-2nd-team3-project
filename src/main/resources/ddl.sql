@@ -68,12 +68,12 @@ CREATE TABLE `dish`
 -- 6. 레시피 테이블
 CREATE TABLE `recipe`
 (
-    `recipe_no`	INT AUTO_INCREMENT PRIMARY KEY,
-    `dish_no`	INT	NOT NULL,
-    `recipe_ingredient`	VARCHAR(1000)	NOT NULL	COMMENT '음식재료(JSON)',
-    `recipe_cookery`	VARCHAR(2000)	NOT NULL,
-    `created_at`	DATETIME	NOT NULL	DEFAULT current_timestamp(),
-    `updated_at`	DATETIME	NOT NULL	DEFAULT current_timestamp() on update current_timestamp(),
+    `recipe_no`         INT AUTO_INCREMENT PRIMARY KEY,
+    `dish_no`           INT           NOT NULL,
+    `recipe_ingredient` VARCHAR(1000) NOT NULL COMMENT '음식재료(JSON)',
+    `recipe_cookery`    VARCHAR(2000) NOT NULL,
+    `created_at`        DATETIME      NOT NULL DEFAULT current_timestamp(),
+    `updated_at`        DATETIME      NOT NULL DEFAULT current_timestamp() on update current_timestamp(),
     FOREIGN KEY (`dish_no`) REFERENCES `dish` (`dish_no`)
 );
 

@@ -8,10 +8,8 @@ import java.util.Optional;
 
 public interface RecipeRepository {
 
-  Recipe save(Recipe Recipe);
+	Recipe save(Recipe Recipe);
 
-  Optional<Recipe> findById(Integer id);
-
-  void deleteById(Integer id);
+	void deleteById(Integer id);
 
 }

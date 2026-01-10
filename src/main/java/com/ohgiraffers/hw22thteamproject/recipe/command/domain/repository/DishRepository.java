@@ -7,10 +7,8 @@ import java.util.Optional;
 
 public interface DishRepository {
 
-    Dish save(Dish dish);
+	Dish save(Dish dish);
 
-    Optional<Dish> findById(Integer id);
-
-    void deleteById(Integer id);
+	void deleteById(Integer id);
 
 }

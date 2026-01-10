@@ -12,29 +12,29 @@ import java.time.LocalDateTime;
 @Builder
 public class ApiResponse<T> {
 
-    private Boolean success;         // 요청 성공 여부
-    private T data;                  // 실제 데이터 (성공 시 사용)
-    private String errorCode;        // 에러 코드 (실패 시 사용)
-    private String message;          // 에러 메시지
-    private LocalDateTime timestamp; // 응답 생성 시간
+	private Boolean success;         // 요청 성공 여부
+	private T data;                  // 실제 데이터 (성공 시 사용)
+	private String errorCode;        // 에러 코드 (실패 시 사용)
+	private String message;          // 에러 메시지
+	private LocalDateTime timestamp; // 응답 생성 시간
 
-    /* 성공 응답 생성 정적 메서드 */
-    public static<T> ApiResponse<T> success(T data) {
-        return ApiResponse.<T>builder()
-                .success(true)
-                .data(data)
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
+	/* 성공 응답 생성 정적 메서드 */
+	public static <T> ApiResponse<T> success(T data) {
+		return ApiResponse.<T>builder()
+			.success(true)
+			.data(data)
+			.timestamp(LocalDateTime.now())
+			.build();
+	}
 
-    /* 실패 응답 생성 정적 메서드 */
-    public static<T> ApiResponse<T> failure(String errorCode, String message) {
-        return ApiResponse.<T>builder()
-                .success(false)
-                .errorCode(errorCode)
-                .message(message)
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
+	/* 실패 응답 생성 정적 메서드 */
+	public static <T> ApiResponse<T> failure(String errorCode, String message) {
+		return ApiResponse.<T>builder()
+			.success(false)
+			.errorCode(errorCode)
+			.message(message)
+			.timestamp(LocalDateTime.now())
+			.build();
+	}
 
 }

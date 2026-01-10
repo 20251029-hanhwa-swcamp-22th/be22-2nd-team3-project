@@ -6,10 +6,8 @@ import java.util.Optional;
 
 public interface DishCategoryRepository {
 
-    DishCategory save(DishCategory dishCategory);
+	DishCategory save(DishCategory dishCategory);
 
-    Optional<DishCategory> findById(Integer id);
-
-    void deleteById(Integer id);
+	void deleteById(Integer id);
 
 }
