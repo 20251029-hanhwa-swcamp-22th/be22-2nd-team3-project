@@ -2,6 +2,9 @@ package com.ohgiraffers.hw22thteamproject.notification.command.domain.aggregate;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +20,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
 public class Notification {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,11 +47,14 @@ public class Notification {
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
 
-	public void Notification(
+	public interface NotificationRepository extends JpaRepository<Notification, Integer>{}
+
+	public /*void 와 이거때문에 못찾음 void붙인사람 똥멍청이 */ Notification(
 		Integer userNo,
 		Integer notificationTypeNo,
 		String notificationContent
-	){
+	) {
+
 this.userNo = userNo;
 this.notificationTypeNo = notificationTypeNo;
 this.notificationContent = notificationContent;
