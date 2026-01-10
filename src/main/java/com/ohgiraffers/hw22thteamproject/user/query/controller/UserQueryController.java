@@ -1,0 +1,27 @@
+package com.ohgiraffers.hw22thteamproject.user.query.controller;
+
+import com.ohgiraffers.hw22thteamproject.common.dto.ApiResponse;
+import com.ohgiraffers.hw22thteamproject.user.query.dto.response.UserDetailResponse;
+import com.ohgiraffers.hw22thteamproject.user.query.service.UserQueryService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1")
+public class UserQueryController {
+
+    private final UserQueryService userQueryService;
+
+    @GetMapping("/users/{user_id}")
+    public ResponseEntity<ApiResponse<UserDetailResponse>> getUser(@PathVariable("user_id") String userId) {
+        UserDetailResponse response = this.userQueryService.getUser(userId);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+
+}
