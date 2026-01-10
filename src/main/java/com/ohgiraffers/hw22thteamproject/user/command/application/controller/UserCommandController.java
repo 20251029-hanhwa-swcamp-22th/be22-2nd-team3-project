@@ -3,6 +3,7 @@ package com.ohgiraffers.hw22thteamproject.user.command.application.controller;
 import com.ohgiraffers.hw22thteamproject.common.dto.ApiResponse;
 import com.ohgiraffers.hw22thteamproject.user.command.application.dto.request.UserCreateRequest;
 import com.ohgiraffers.hw22thteamproject.user.command.application.service.UserCommandService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class UserCommandController {
 
     /* 회원가입 */
     @PostMapping("/users")
-    public ResponseEntity<ApiResponse<Void>> register(@RequestBody UserCreateRequest userCreateRequest) {
+    public ResponseEntity<ApiResponse<Void>> register(@Valid @RequestBody UserCreateRequest userCreateRequest) {
         // 서비스 호출
         this.userCommandService.registUser(userCreateRequest);
 
