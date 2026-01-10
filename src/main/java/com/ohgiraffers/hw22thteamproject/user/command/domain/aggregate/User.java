@@ -29,13 +29,13 @@ public class User {
     @Column(name = "user_pwd", nullable = false)
     private String password;
 
-    @Column(name = "user_nickname", nullable = false)
+    @Column(name = "user_nickname",unique = true, nullable = false)
     private String nickname;
 
-    @Column(name = "user_email", nullable = false)
+    @Column(name = "user_email",unique = true, nullable = false)
     private String email;
 
-    @Column(name = "user_phonenum", nullable = false)
+    @Column(name = "user_phonenum",unique = true, nullable = false)
     private String phoneNum;
 
     @Column(name = "user_birthdate", nullable = false)
