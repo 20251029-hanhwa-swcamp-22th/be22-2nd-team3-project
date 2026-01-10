@@ -1,18 +1,6 @@
 spring:
-  datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://221.151.189.125:10003/backend_team3_db
-    username: root
-    password: backend_team3
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: none
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-    properties:
-      hibernate:
-        format_sql: true
+  profiles:
+    active: dev
 
 mybatis:
   configuration:
