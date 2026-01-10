@@ -56,6 +56,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+                                .requestMatchers("/error").permitAll()
                                 // 임시: 모든 요청 허용 (테스트용)
                                 .anyRequest().authenticated()
                 )
