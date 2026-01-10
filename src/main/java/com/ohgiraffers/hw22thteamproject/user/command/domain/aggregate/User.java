@@ -1,7 +1,7 @@
 package com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate;
 
+import com.ohgiraffers.hw22thteamproject.config.Constants;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,8 +23,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userNo;
 
-    @Column(name = "user_id", nullable = false)
-    private String id;
+    @Column(name = "user_id",unique = true, nullable = false)
+    private String userId;
 
     @Column(name = "user_pwd", nullable = false)
     private String password;
@@ -42,10 +42,15 @@ public class User {
     private Date birthdate;
 
     @Column(name = "user_registered_at", nullable = false)
+    @CreatedDate
     private Date registeredAt;
 
     @Column(name = "user_is_notice_active", nullable = false)
-    private String isNoticeActive;
+    private String isNoticeActive = Constants.NOTICE_DEFAULT_VALUE;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role = UserRole.USER;
 
     @Column(name = "created_at", nullable = false)
     @CreatedDate // Entity 생성 시간을 자동 기록
@@ -56,5 +61,9 @@ public class User {
     private LocalDateTime updatedAt;
 
 
+    /* 암호화된 비밀번호를 세팅하는 메서드 */
+    public void setEncodedPassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
 
 }
