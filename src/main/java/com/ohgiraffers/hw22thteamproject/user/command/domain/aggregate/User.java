@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-@Table(name = " ")
+@Table(name = "user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA만 기본 생성자 사용 가능
 @Getter
 @EntityListeners(AuditingEntityListener.class) // Entity 삽입, 수정 감지 시 시간 기록
@@ -42,10 +42,10 @@ public class User {
     private Date birthdate;
 
     @Column(name = "user_registered_at", nullable = false)
-    private Date registered_at;
+    private Date registeredAt;
 
-    @Column(name = "is_notice_active", nullable = false)
-    private String is_notice_active;
+    @Column(name = "user_is_notice_active", nullable = false)
+    private String isNoticeActive;
 
     @Column(name = "created_at", nullable = false)
     @CreatedDate // Entity 생성 시간을 자동 기록
