@@ -4,4 +4,20 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ohgiraffers.hw22thteamproject.user.query.mapper.UserMapper">
 
+    <select id="selectUserByUserId" resultType="UserDTO">
+        SELECT
+            user_no,
+            user_id,
+            user_pwd,
+            user_nickname,
+            user_email,
+            user_phonenum,
+            user_birthdate,
+            user_registered_at,
+            user_is_notice_active
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+
 </mapper>
