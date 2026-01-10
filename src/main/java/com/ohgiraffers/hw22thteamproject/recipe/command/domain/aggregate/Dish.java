@@ -1,15 +1,12 @@
 package com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate;
 
 import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.User;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-
 import org.hibernate.annotations.ColumnDefault;
-
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -34,7 +31,7 @@ public class Dish {
 
 	@Size(max = 20)
 	@NotNull
-	@Column(name = "dish_name", nullable = false, length = 20)
+	@Column(name = "dish_name", nullable = false, length = 20, unique = true) // unique 추가
 	private String dishName;
 
 	@Size(max = 300)
@@ -43,11 +40,12 @@ public class Dish {
 	private String dishImgFileRoute;
 
 	@NotNull
-	@ColumnDefault("0")
+	@Builder.Default // Builder 사용 시 기본값 유지를 위해 필요
 	@Column(name = "dish_is_marked", nullable = false)
 	private Boolean dishIsMarked = false;
 
-	@OneToMany(mappedBy = "dishNo")
+	@Builder.Default
+	@OneToMany(mappedBy = "dishNo") // Recipe 엔티티 내의 필드명과 일치해야 함
 	private Set<Recipe> recipes = new LinkedHashSet<>();
 
 	@NotNull
@@ -56,13 +54,12 @@ public class Dish {
 	private DishCategory dishCategoryNo;
 
 	@NotNull
-	@ColumnDefault("current_timestamp()")
-	@Column(name = "created_at", nullable = false)
-	private Instant createdAt;
+	@Builder.Default
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private LocalDateTime createdAt = LocalDateTime.now();
 
 	@NotNull
-	@ColumnDefault("current_timestamp()")
+	@Builder.Default
 	@Column(name = "updated_at", nullable = false)
-	private Instant updatedAt;
-
+	private LocalDateTime updatedAt = LocalDateTime.now();
 }
