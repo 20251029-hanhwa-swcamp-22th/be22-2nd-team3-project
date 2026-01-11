@@ -5,4 +5,6 @@ import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.RefreshTo
 public interface UserAuthRepository {
 
     RefreshToken save(RefreshToken tokenEntity);
+
+    void deleteById(String userId);
 }

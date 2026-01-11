@@ -72,4 +72,12 @@ public class UserCommandService {
     }
 
 
+    public void logout(String refreshToken) {
+        // refreshToken 검증 절차
+        this.jwtTokenProvider.validateToken(refreshToken);
+
+        String userId = this.jwtTokenProvider.getUserIdFromJWT(refreshToken);
+
+        this.userAuthRepository.deleteById(userId);
+    }
 }
