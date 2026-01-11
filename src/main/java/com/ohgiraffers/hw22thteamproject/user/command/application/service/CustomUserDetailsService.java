@@ -1,4 +1,4 @@
-package com.ohgiraffers.hw22thteamproject.auth.service;
+package com.ohgiraffers.hw22thteamproject.user.command.application.service;
 
 
 import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.User;
