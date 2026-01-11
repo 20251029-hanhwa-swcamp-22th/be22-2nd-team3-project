@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.ohgiraffers.hw22thteamproject.common.dto.ApiResponse;
+import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.CategoryPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.IngredientPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.MonthlyPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.service.StatisticsQueryService;
@@ -36,5 +37,14 @@ public class StatisticsQueryController {
 		List<IngredientPurchaseDTO> result = statisticsQueryService.getIngredientPurchase(userNo);
 		return ResponseEntity.ok(ApiResponse.success(result));
 	}
+	
+	@GetMapping("/statistics/category/{userNo}")
+	public ResponseEntity<ApiResponse<List<CategoryPurchaseDTO>>> getCategoryStats(
+		@PathVariable int userNo
+	) {
+		List<CategoryPurchaseDTO> result = statisticsQueryService.getCategoryExpenseStats(userNo);
 
+		return ResponseEntity.ok(ApiResponse.success(result));
+	}
+	
 }

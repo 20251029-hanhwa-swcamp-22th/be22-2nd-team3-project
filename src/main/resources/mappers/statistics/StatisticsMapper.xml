@@ -36,4 +36,19 @@
         GROUP BY ingredient_stock_name
         ORDER BY total_cost DESC
     </select>
+
+    <resultMap id="CategoryPurchaseMap" type="com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.CategoryPurchaseDTO">
+        <result property="category" column="ingredient_stock_category"
+                javaType="com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.IngredientCategory"/>
+        <result property="totalCost" column="total_cost"/>
+    </resultMap>
+    <select id="selectCategoryPurchaseList" resultMap="CategoryPurchaseMap">
+        SELECT
+        ingredient_stock_category,
+        COALESCE(SUM(ingredient_stock_total_cost), 0) AS total_cost
+        FROM ingredient_stock
+        WHERE user_no = #{userNo}
+        GROUP BY ingredient_stock_category
+        ORDER BY total_cost DESC
+    </select>
 </mapper>

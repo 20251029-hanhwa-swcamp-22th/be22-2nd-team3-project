@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.CategoryPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.IngredientPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.MonthlyPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.mapper.StatisticsMapper;
@@ -53,6 +54,10 @@ public class StatisticsQueryService {
 			}
 		}
 		return list;
+	}
+
+	public List<CategoryPurchaseDTO> getCategoryExpenseStats(int userNo) {
+		return statisticsMapper.selectCategoryPurchaseList(userNo);
 	}
 
 }
