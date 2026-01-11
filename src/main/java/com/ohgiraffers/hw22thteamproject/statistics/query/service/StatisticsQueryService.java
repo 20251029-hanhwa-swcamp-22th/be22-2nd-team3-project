@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.IngredientPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.MonthlyPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.mapper.StatisticsMapper;
 
@@ -20,7 +21,7 @@ public class StatisticsQueryService {
 
 	public Map<String, Object> getMonthlyPurchaseDetails(int userNo, String yearMonth) {
 
-		List<MonthlyPurchaseDTO> list = statisticsMapper.findMonthlyPurchaseDetails(userNo, yearMonth);
+		List<MonthlyPurchaseDTO> list = statisticsMapper.selectMonthlyPurchaseList(userNo, yearMonth);
 
 		int totalCost = list.stream()
 			.mapToInt(MonthlyPurchaseDTO::getCost)
@@ -32,6 +33,26 @@ public class StatisticsQueryService {
 
 		return response;
 
+	}
+
+	public List<IngredientPurchaseDTO> getIngredientPurchase(int userNo){
+		List<IngredientPurchaseDTO> list = statisticsMapper.selectIngredientPurchaseList(userNo);
+
+		if (list.isEmpty()) {
+			return list;
+		}
+
+		long total = list.stream()
+			.mapToLong(IngredientPurchaseDTO::getTotalCost)
+			.sum();
+
+		for (IngredientPurchaseDTO dto : list) {
+			if(total > 0){
+				double percentage = (double) dto.getTotalCost() / total * 100;
+				dto.setPercentage(Math.round(percentage * 100) / 100.0);
+			}
+		}
+		return list;
 	}
 
 }

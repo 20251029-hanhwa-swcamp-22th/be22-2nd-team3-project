@@ -3,14 +3,14 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ohgiraffers.hw22thteamproject.statistics.query.mapper.StatisticsMapper">
-    <resultMap id="ingredientStockMap" type="com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.MonthlyPurchaseDTO">
-        <result property="name" column="ingredient_stock_name"/>
-        <result property="category" column="ingredient_stock_category"/>
-        <result property="quantity" column="quantity_unit"/>
-        <result property="cost" column="ingredient_stock_total_cost"/>
-        <result property="purchaseDate" column="ingredient_stock_bought_at"/>
+    <resultMap id="MonthlyPurchaseMap" type="com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.MonthlyPurchaseDTO">
+        <result column="ingredient_stock_name" property="name"/>
+        <result column="ingredient_stock_category" property="category"/>
+        <result column="quantity_unit" property="quantity"/>
+        <result column="ingredient_stock_total_cost" property="cost"/>
+        <result column="ingredient_stock_bought_at" property="purchaseDate"/>
     </resultMap>
-    <select id="findMonthlyPurchaseDetails" parameterType="map" resultMap="ingredientStockMap">
+    <select id="selectMonthlyPurchaseList" parameterType="map" resultMap="MonthlyPurchaseMap">
         SELECT
         ingredient_stock_name,
         ingredient_stock_total_cost,
@@ -23,4 +23,17 @@
         ORDER BY ingredient_stock_bought_at DESC
     </select>
 
+    <resultMap id="IngredientPurchaseMap" type="com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.IngredientPurchaseDTO">
+        <result column="ingredient_stock_name" property="name"/>
+        <result column="total_cost"            property="totalCost"/>
+    </resultMap>
+    <select id="selectIngredientPurchaseList" resultMap="IngredientPurchaseMap">
+        SELECT
+        ingredient_stock_name,
+        SUM(ingredient_stock_total_cost) AS total_cost
+        FROM ingredient_stock
+        WHERE user_no = #{userNo}
+        GROUP BY ingredient_stock_name
+        ORDER BY total_cost DESC
+    </select>
 </mapper>

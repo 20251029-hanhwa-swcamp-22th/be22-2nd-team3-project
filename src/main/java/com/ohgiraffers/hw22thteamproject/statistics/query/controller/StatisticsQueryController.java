@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.ohgiraffers.hw22thteamproject.common.dto.ApiResponse;
+import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.IngredientPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.MonthlyPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.service.StatisticsQueryService;
 
@@ -20,11 +22,19 @@ public class StatisticsQueryController {
 
 	@GetMapping("/statistics/monthly/{userNo}")
 	public ResponseEntity<ApiResponse<Map<String, Object>>> getMonthlyPurchaseByUser(
-			@PathVariable int userNo,
-			@RequestParam String yearMonth
-		) {
-		Map<String, Object> response = statisticsQueryService.getMonthlyPurchaseDetails(userNo,yearMonth);
+		@PathVariable int userNo,
+		@RequestParam String yearMonth
+	) {
+		Map<String, Object> response = statisticsQueryService.getMonthlyPurchaseDetails(userNo, yearMonth);
 		return ResponseEntity.ok(ApiResponse.success(response));
+	}
+
+	@GetMapping("/statistics/ingreient/{userNo}")
+	public ResponseEntity<ApiResponse<List<IngredientPurchaseDTO>>> getIngredientPurchaseByUser(
+		@PathVariable int userNo
+	) {
+		List<IngredientPurchaseDTO> result = statisticsQueryService.getIngredientPurchase(userNo);
+		return ResponseEntity.ok(ApiResponse.success(result));
 	}
 
 }
