@@ -1,7 +1,19 @@
 spring:
   profiles:
     active: dev
-
+  ai: # need fix
+    google:
+      genai:
+        api-key: # need add\
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    properties:
+      hibernate:
+        format_sql: true
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
