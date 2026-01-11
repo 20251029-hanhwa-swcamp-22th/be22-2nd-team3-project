@@ -1,16 +1,32 @@
-### UserID를 사용한 회원 정보 조회
-GET http://localhost:8080/api/v1/users/gusgh075
-
 
 ### 회원 가입
 POST http://localhost:8080/api/v1/users
 Content-Type: application/json
 
 {
-  "userId": "testuserID",
-  "password": "testUserPWD#",
-  "nickname": "HOLYSHIT",
-  "email": "rlatlsdn98@gmail.com",
-  "phoneNum": "01022223333",
-  "birthdate": "1998-01-12"
+  "userId": "testuser01",
+  "password": "testuserpwd@",
+  "nickname": "sinwooTest",
+  "email": "testuser01@gmail.xom",
+  "phoneNum": "01012345678",
+  "birthdate": "2025-06-06"
 }
+
+### 로그인
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "userId": "testuser01",
+  "password": "testuserpwd@"
+}
+
+> {%
+    // 로그인 결과(응답) 중 accessToken을 auth_token 변수에 저장
+    client.global.set("auth_token", response.body.data.accessToken);
+%}
+
+### UserID를 사용한 회원 정보 조회
+GET http://localhost:8080/api/v1/users/testuser01
+Authorization: Bearer {{auth_token}}
+Accept: application/json
