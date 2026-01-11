@@ -51,4 +51,20 @@
         GROUP BY ingredient_stock_category
         ORDER BY total_cost DESC
     </select>
+
+    <resultMap id="DisposalHistoryMap" type="com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.DisposalHistoryDTO">
+        <result property="disposalCost" column="disposal_cost"/>
+    </resultMap>
+    <select id="selectDisposalHistoryList" resultMap="DisposalHistoryMap">
+        SELECT
+        disposal_cost
+        FROM disposal_histories
+        WHERE user_no = #{userNo}
+        <if test="startDate != null and startDate != ''">
+            AND disposal_at &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND disposal_at &lt;= #{endDate}
+        </if>
+    </select>
 </mapper>

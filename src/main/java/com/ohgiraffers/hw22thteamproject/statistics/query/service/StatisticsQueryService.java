@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.CategoryPurchaseDTO;
+import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.DisposalCostResponse;
+import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.DisposalHistoryDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.IngredientPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.MonthlyPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.mapper.StatisticsMapper;
@@ -58,6 +60,20 @@ public class StatisticsQueryService {
 
 	public List<CategoryPurchaseDTO> getCategoryExpenseStats(int userNo) {
 		return statisticsMapper.selectCategoryPurchaseList(userNo);
+	}
+
+	public DisposalCostResponse getDisposalHistory(int userNo, String startDate, String endDate) {
+
+		List<DisposalHistoryDTO> list = statisticsMapper.selectDisposalHistoryList(userNo, startDate, endDate);
+
+		long totalCost = 0;
+
+		totalCost = list.stream().mapToLong(DisposalHistoryDTO::getDisposalCost)
+			.sum();
+
+		return DisposalCostResponse.builder()
+			.totalDisposalCost(totalCost)
+			.build();
 	}
 
 }
