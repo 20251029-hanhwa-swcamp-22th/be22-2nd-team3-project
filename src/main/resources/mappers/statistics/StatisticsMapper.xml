@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohgiraffers.hw22thteamproject.statistics.query.mapper.StatisticsMapper">
+    <resultMap id="ingredientStockMap" type="com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.MonthlyPurchaseDTO">
+        <id property="ingredientStockNo" column="ingredient_stock_no"/>
+        <result property="userNo" column="user_no"/>
+        <result property="ingredientStockName" column="ingredient_stock_name"/>
+        <result property="ingredientStockCategory" column="ingredient_stock_category"/>
+        <result property="ingredientStockUnit" column="ingredient_stock_unit"/>
+        <result property="ingredientStockTotalQuantity" column="ingredient_stock_total_quantity"/>
+        <result property="ingredientStockTotalCost" column="ingredient_stock_total_cost"/>
+        <result property="ingredientStockBoughtAt" column="ingredient_stock_bought_at"/>
+    </resultMap>
+    <select id="findMonthlyPurchaseDetails" parameterType="map" resultMap="ingredientStockMap">
+        SELECT
+        ingredient_stock_no,
+        ingredient_stock_name,
+        ingredient_stock_category,
+        ingredient_stock_unit,
+        ingredient_stock_total_quantity,
+        ingredient_stock_total_cost,
+        ingredient_stock_bought_at
+        FROM ingredient_stock
+        WHERE user_no = #{userNo}
+        AND DATE_FORMAT(ingredient_stock_bought_at, '%Y-%m') = #{yearMonth}
+        ORDER BY ingredient_stock_bought_at DESC;
+    </select>
+
+</mapper>
