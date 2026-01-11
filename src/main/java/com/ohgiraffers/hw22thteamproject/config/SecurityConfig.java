@@ -61,8 +61,8 @@ public class SecurityConfig {
                                         "/api/v1/auth/login"
                                 ).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/v1/users/").hasAuthority("USER")
+                                // DB삽입 오류로 인한 401에러 차단
                                 .requestMatchers("/error").permitAll()
-                                // 임시: 모든 요청 허용 (테스트용)
                                 .anyRequest().authenticated()
                 )
                 // UsernamePasswordAuthenticationFilter 앞에 jwtAuthenticationFilter 필터를 추가
