@@ -8,12 +8,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class MonthlyPurchaseDTO {
-	private int ingredientStockNo;
-	private String ingredientStockName;
-	private String ingredientStockCategory;
-	private String ingredientStockUnit;
-	private int ingredientStockTotalQuantity;
-	private int ingredientStockTotalCost;
-	private LocalDateTime ingredientStockBoughtAt;
-	private LocalDate ingredientStockExpiredAt;
+	private String name; // 식자재 이름
+	private int cost;             // 구매 가격
+	private String quantity;          // 구매 수량
+	private String purchaseDate;   // 구매 일자
+	private String category;
 }

@@ -1,6 +1,7 @@
 package com.ohgiraffers.hw22thteamproject.statistics.query.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +19,11 @@ public class StatisticsQueryController {
 	private final StatisticsQueryService statisticsQueryService;
 
 	@GetMapping("/statistics/monthly/{userNo}")
-	public ResponseEntity<ApiResponse<List<MonthlyPurchaseDTO>>> getMonthlyPurchaseByUser(
+	public ResponseEntity<ApiResponse<Map<String, Object>>> getMonthlyPurchaseByUser(
 			@PathVariable int userNo,
 			@RequestParam String yearMonth
 		) {
-		List<MonthlyPurchaseDTO> response = statisticsQueryService.getMonthlyPurchaseDetails(userNo,yearMonth);
+		Map<String, Object> response = statisticsQueryService.getMonthlyPurchaseDetails(userNo,yearMonth);
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
