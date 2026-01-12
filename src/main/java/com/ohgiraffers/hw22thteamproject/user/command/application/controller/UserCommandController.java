@@ -31,7 +31,7 @@ public class UserCommandController {
 
     /* 회원정보 수정 (email, phoneNum ) */
     @PatchMapping("/users")
-    public ResponseEntity<ApiResponse<Void>> updateUserInfo (
+    public ResponseEntity<ApiResponse<Void>> updateUserInfo(
             @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestBody UserUpdateRequest userUpdateRequest
     ) {
@@ -42,12 +42,22 @@ public class UserCommandController {
 
     /* 회원정보 수정 (password) */
     @PatchMapping("/users/password")
-    public ResponseEntity<ApiResponse<Void>> updatePassword (
+    public ResponseEntity<ApiResponse<Void>> updatePassword(
             @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestBody UserPwdUpdateRequest userPwdUpdateRequest
             ) {
         // 1. 서비스 호출
         this.userCommandService.updateUserPassword(userDetails, userPwdUpdateRequest);
+        // return ResponseEntity
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null));
+    }
+
+    @DeleteMapping("/users")
+    public ResponseEntity<ApiResponse<Void>> deleteUser(
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        // 1. 서비스 호출
+        this.userCommandService.deleteUser(userDetails);
         // return ResponseEntity
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null));
     }
