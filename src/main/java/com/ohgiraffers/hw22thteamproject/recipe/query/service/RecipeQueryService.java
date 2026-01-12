@@ -28,8 +28,8 @@ public class RecipeQueryService {
 		return dishCategoryMapper.selectAllDishCategories();
 	}
 
-	public List<DishDTO> findDishesByUser(int userNo) {
-		return dishMapper.selectDishesByUser(userNo);
+	public List<DishDTO> findDishesByUserNo(int userno) {
+		return dishMapper.selectDishesByUser(userno);
 	}
 
 	public RecipeDetailResponse getRecipeDetail(int dishNo) {
@@ -38,5 +38,9 @@ public class RecipeQueryService {
 		List<RecipeDTO> recipes = recipeMapper.selectRecipeByDishId(dishNo);
 
 		return new RecipeDetailResponse(dish, recipes);
+	}
+
+	public List<DishDTO> findDishesByUsername(String username) {
+		return dishMapper.selectDishesByUsername(username);
 	}
 }
