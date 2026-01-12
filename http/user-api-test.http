@@ -44,3 +44,24 @@ Accept: application/json
 > {%
     client.global.clearAll();
 %}
+
+### 회원정보 (email, phoneNum) 수정
+PATCH http://localhost:8080/api/v1/users
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "email": "rlatlsdn98@gmail.com",
+  "phoneNum": "010-9999-1192"
+}
+
+### 회원정보 (password) 수정
+PATCH http://localhost:8080/api/v1/users/password
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "resentPassword": "testuserpwd@",
+  "newPassword": "password#",
+  "checkNewPassword": "password#"
+}
