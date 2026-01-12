@@ -65,3 +65,7 @@ Content-Type: application/json
   "newPassword": "password#",
   "checkNewPassword": "password#"
 }
+
+### 회원탈퇴
+DELETE http://localhost:8080/api/v1/users
+Authorization: Bearer {{auth_token}}

@@ -117,4 +117,13 @@ public class UserCommandService {
         }
 
     }
+
+    @Transactional
+    public void deleteUser(UserDetails userDetails) {
+        // DB에서 일치하는 유저 가져오기
+        User user = this.userRepository.findByUserId(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("일치하는 회원이 없습니다."));
+        // DB에서
+        user.inActiveUser();
+    }
 }
