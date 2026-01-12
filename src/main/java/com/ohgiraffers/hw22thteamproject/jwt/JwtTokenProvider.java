@@ -32,7 +32,7 @@ public class JwtTokenProvider {
     }
 
     /* access token 생성 메서드 */
-    public String createToken(String userId, String role) {
+    public String createToken(Long userNo, String userId, String role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
 
@@ -40,6 +40,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .subject(userId)      // payload: subject (보통 사용자 식별) (등록 claim)
                 .claim("role",role)  // payload: role (권한 정보) (공개 claim)
+                .claim("userId", userNo.toString())
                 .issuedAt(now)          // payload: issuedAt (발행 시간)
                 .expiration(expiryDate) // payload: Expiration time (토큰 만료 시간)
                 .signWith(secretKey)    // signature: 비밀키 서명 (위변조 방지)
@@ -47,7 +48,7 @@ public class JwtTokenProvider {
     }
 
     /* refresh token 생성 메서드 */
-    public String createRefreshToken(String userId, String role) {
+    public String createRefreshToken(Long userNo, String userId, String role) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtRefreshExpiration);
 
@@ -55,6 +56,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .subject(userId)      // payload: subject (보통 사용자 식별) (등록 claim)
                 .claim("role",role)  // payload: role (권한 정보) (공개 claim)
+                .claim("userId", userNo.toString())
                 .issuedAt(now)          // payload: issuedAt (발행 시간)
                 .expiration(expiryDate) // payload: Expiration time (토큰 만료 시간)
                 .signWith(secretKey)    // signature: 비밀키 서명 (위변조 방지)

@@ -62,8 +62,8 @@ public class UserCommandService {
         }
 
         // 3. 비밀번호가 일치 -> 로그인 성공 -> 토큰 생성 -> 발급
-        String accessToken = this.jwtTokenProvider.createToken(user.getUserId(), user.getRole().name());
-        String refreshToken = this.jwtTokenProvider.createRefreshToken(user.getUserId(), user.getRole().name());
+        String accessToken = this.jwtTokenProvider.createToken(user.getUserNo(), user.getUserId(), user.getRole().name());
+        String refreshToken = this.jwtTokenProvider.createRefreshToken(user.getUserNo(), user.getUserId(), user.getRole().name());
 
         // 4. refresh token DB에 저장(보안 및 토큰 재발급 검증용)
         RefreshToken tokenEntity = RefreshToken.builder()
