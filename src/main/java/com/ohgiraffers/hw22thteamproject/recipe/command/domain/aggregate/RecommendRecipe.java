@@ -1,6 +1,5 @@
 package com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate;
 
-import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,14 +17,12 @@ public class RecommendRecipe {
   private Integer id;
 
   @NotNull
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "user_no", nullable = false)
-  private User userNo;
+  @Column(name = "user_no", nullable = false)
+  private Integer userNo;
 
   @NotNull
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "dish_category_no", nullable = false)
-  private DishCategory dishCategoryNo;
+  @Column(name = "dish_category_no", nullable = false)
+  private Integer dishCategoryNo;
 
   @Size(max = 20)
   @NotNull
@@ -51,5 +48,4 @@ public class RecommendRecipe {
   @NotNull
   @Column(name = "rcd_recipe_tips", nullable = false, length = 2000)
   private String rcdRecipeTips;
-
 }
