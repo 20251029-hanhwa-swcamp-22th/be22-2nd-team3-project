@@ -1,18 +1,18 @@
 package com.ohgiraffers.hw22thteamproject.statistics.query.service;
 
+import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.CategoryPurchaseDTO;
-import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.DisposalCostResponse;
-import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.DisposalHistoryDTO;
-import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.IngredientPurchaseDTO;
-import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.MonthlyPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.mapper.StatisticsMapper;
 
 @Service
@@ -75,5 +75,32 @@ public class StatisticsQueryService {
 			.totalDisposalCost(totalCost)
 			.build();
 	}
+
+	public List<MonthlyDisposalDTO> getMonthlyDisposalList(int userNo) {
+    List<MonthlyDisposalDTO> list = statisticsMapper.selectMonthlyDisposalList(userNo);
+
+    List<MonthlyDisposalDTO> resultList = new ArrayList<>();
+
+    Map<String, MonthlyDisposalDTO> listMap = list.stream().collect(Collectors.toMap(MonthlyDisposalDTO::getStatMonth, dto -> dto));
+
+    LocalDate currentMonth = LocalDate.now();
+    for (int i = 5; i >= 0; i--) {
+
+      LocalDate lastMonth = currentMonth.minusMonths(i);
+      String key = lastMonth.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+
+      if (listMap.containsKey(key)) {
+        resultList.add(listMap.get(key));
+      } else {
+        MonthlyDisposalDTO emptyList = new MonthlyDisposalDTO();
+        emptyList.setStatMonth(key);
+        emptyList.setTotalCost(0L);
+        emptyList.setDiscardCost(0L);
+        emptyList.setWasteRate(0.0);
+        resultList.add(emptyList);
+      }
+    }
+    return resultList;
+  }
 
 }

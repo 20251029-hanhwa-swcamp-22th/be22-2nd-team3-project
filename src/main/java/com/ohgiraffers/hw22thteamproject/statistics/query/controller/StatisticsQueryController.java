@@ -13,6 +13,7 @@ import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.CategoryP
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.DisposalCostResponse;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.DisposalHistoryDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.IngredientPurchaseDTO;
+import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.MonthlyDisposalDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.MonthlyPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.service.StatisticsQueryService;
 
@@ -56,6 +57,15 @@ public class StatisticsQueryController {
 		@RequestParam(required = false) String endDate
 	) {
 		DisposalCostResponse result = statisticsQueryService.getDisposalHistory(userNo, startDate, endDate);
+
+		return ResponseEntity.ok(ApiResponse.success(result));
+	}
+
+	@GetMapping("statistics/monthly-disposal/{userNo}")
+	public ResponseEntity<ApiResponse<List<MonthlyDisposalDTO>>> getMonthlyDisposalByUser(
+		@PathVariable int userNo
+	) {
+		List<MonthlyDisposalDTO> result = statisticsQueryService.getMonthlyDisposalList(userNo);
 
 		return ResponseEntity.ok(ApiResponse.success(result));
 	}

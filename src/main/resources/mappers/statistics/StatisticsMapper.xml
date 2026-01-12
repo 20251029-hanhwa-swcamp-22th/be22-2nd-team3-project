@@ -67,4 +67,44 @@
             AND disposal_at &lt;= #{endDate}
         </if>
     </select>
+
+    <resultMap id="MonthlyStatsResultMap" type="com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.MonthlyDisposalDTO">
+        <result property="statMonth" column="stat_month" />
+        <result property="totalCost" column="total_cost" />
+        <result property="discardCost" column="discard_cost" />
+        <result property="wasteRate" column="waste_rate" />
+    </resultMap>
+    <select id="selectMonthlyDisposalList" parameterType="int" resultMap="MonthlyStatsResultMap">
+        SELECT
+        temp.month_date AS stat_month,
+        SUM(temp.buy_amount) AS total_cost,
+        SUM(temp.waste_amount) AS discard_cost,
+        CASE
+        WHEN SUM(temp.buy_amount) = 0 THEN 0
+        ELSE ROUND((SUM(temp.waste_amount) / SUM(temp.buy_amount)) * 100, 2)
+        END AS waste_rate
+        FROM (
+        <!--(A) 재고 테이블: 구매 금액 집계 (최근 6개월)-->
+        SELECT
+        DATE_FORMAT(ingredient_stock_bought_at, '%Y-%m') AS month_date,
+        ingredient_stock_total_cost AS buy_amount,
+        0 AS waste_amount
+        FROM ingredient_stock
+        WHERE user_no = #{userNo}
+        AND ingredient_stock_bought_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+
+        UNION ALL
+
+        <!--(B) 폐기 이력 테이블: 폐기 비용 집계 (최근 6개월)-->
+        SELECT
+        DATE_FORMAT(disposal_at, '%Y-%m') AS month_date,
+        0 AS buy_amount,
+        disposal_cost AS waste_amount
+        FROM disposal_histories
+        WHERE user_no = #{userNo}
+        AND disposal_at >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+        ) temp
+        GROUP BY temp.month_date
+        ORDER BY temp.month_date ASC
+    </select>
 </mapper>

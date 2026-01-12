@@ -2,13 +2,9 @@ package com.ohgiraffers.hw22thteamproject.statistics.query.mapper;
 
 import java.util.List;
 
+import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.CategoryPurchaseDTO;
-import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.DisposalHistoryDTO;
-import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.IngredientPurchaseDTO;
-import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.MonthlyPurchaseDTO;
 
 @Mapper
 public interface StatisticsMapper {
@@ -28,4 +24,6 @@ public interface StatisticsMapper {
 		@Param("endDate") String endDate
 	);
 
+	  List<MonthlyDisposalDTO> selectMonthlyDisposalList(
+		@Param("userNo") int userNo);
 }
