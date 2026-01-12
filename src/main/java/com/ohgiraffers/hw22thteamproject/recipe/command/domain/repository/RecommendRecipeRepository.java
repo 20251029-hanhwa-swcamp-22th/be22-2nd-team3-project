@@ -1,0 +1,10 @@
+package com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository;
+
+import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.Recipe;
+import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.RecommendRecipe;
+
+public interface RecommendRecipeRepository {
+  RecommendRecipe save(RecommendRecipe Recipe);
+
+  void deleteById(Integer id);
+}
