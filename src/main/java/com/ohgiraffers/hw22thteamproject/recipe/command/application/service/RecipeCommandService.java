@@ -1,5 +1,11 @@
 package com.ohgiraffers.hw22thteamproject.recipe.command.application.service;
 
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeRecommendRequest;
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response.RecipeRecommendResponse;
+import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.RecommendRecipe;
+import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.RecommendRecipeRepository;
+import com.ohgiraffers.hw22thteamproject.recipe.command.infrastructure.service.RecipeRecommendService;
+import com.ohgiraffers.hw22thteamproject.user.command.domain.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +35,8 @@ public class RecipeCommandService {
 	private final DishMapper dishMapper;
 	private final UserMapper userMapper;
 	private final ModelMapper modelMapper;
-
+  private final RecipeRecommendService recipeRecommendService;
+  private final RecommendRecipeRepository recommendRecipeRepository;
 	@Transactional
 	public Integer registRecipe(RecipeCreateRequest request) {
 
@@ -100,4 +107,16 @@ public class RecipeCommandService {
 		dishRepository.deleteById(dishNo);
 
 	}
+
+  @Transactional
+  public RecipeRecommendResponse getRecipeRecommendation(RecipeRecommendRequest request, String username) {
+    RecipeRecommendResponse recipeRecommendation = recipeRecommendService.getRecipeRecommendation(request);
+
+    RecommendRecipe recommendRecipe = modelMapper.map(recipeRecommendation,RecommendRecipe.class);
+    User user = modelMapper.map(userMapper.selectUserByUserId(username), User.class);
+    recommendRecipe.setUserNo(user.getUserNo().intValue());
+
+    recommendRecipeRepository.save(recommendRecipe);
+    return recipeRecommendation;
+  }
 }
