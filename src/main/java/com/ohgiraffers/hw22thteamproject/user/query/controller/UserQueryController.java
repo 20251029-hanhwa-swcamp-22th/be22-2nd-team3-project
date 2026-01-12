@@ -5,6 +5,8 @@ import com.ohgiraffers.hw22thteamproject.user.query.dto.response.UserDetailRespo
 import com.ohgiraffers.hw22thteamproject.user.query.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,14 @@ public class UserQueryController {
     @GetMapping("/users/{user_id}")
     public ResponseEntity<ApiResponse<UserDetailResponse>> getUser(@PathVariable("user_id") String userId) {
         UserDetailResponse response = this.userQueryService.getUser(userId);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @GetMapping("/users/myinfo")
+    public ResponseEntity<ApiResponse<UserDetailResponse>> getMyInfo(
+            @AuthenticationPrincipal UserDetails userDetails
+            ) {
+        UserDetailResponse response = this.userQueryService.getUser(userDetails.getUsername());
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 

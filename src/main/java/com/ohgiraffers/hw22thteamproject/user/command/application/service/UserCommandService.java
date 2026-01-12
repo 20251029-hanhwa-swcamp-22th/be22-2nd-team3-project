@@ -3,15 +3,20 @@ package com.ohgiraffers.hw22thteamproject.user.command.application.service;
 import com.ohgiraffers.hw22thteamproject.jwt.JwtTokenProvider;
 import com.ohgiraffers.hw22thteamproject.user.command.application.dto.request.UserCreateRequest;
 import com.ohgiraffers.hw22thteamproject.user.command.application.dto.request.UserLoginRequest;
+import com.ohgiraffers.hw22thteamproject.user.command.application.dto.request.UserPwdUpdateRequest;
+import com.ohgiraffers.hw22thteamproject.user.command.application.dto.request.UserUpdateRequest;
 import com.ohgiraffers.hw22thteamproject.user.command.application.dto.response.TokenResponse;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.RefreshToken;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.User;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.repository.UserAuthRepository;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.repository.UserRepository;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.service.UserDomainService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,8 +62,8 @@ public class UserCommandService {
         }
 
         // 3. 비밀번호가 일치 -> 로그인 성공 -> 토큰 생성 -> 발급
-        String accessToken = this.jwtTokenProvider.createToken(user.getUserId(), user.getRole().name());
-        String refreshToken = this.jwtTokenProvider.createRefreshToken(user.getUserId(), user.getRole().name());
+        String accessToken = this.jwtTokenProvider.createToken(user.getUserNo(), user.getUserId(), user.getRole().name());
+        String refreshToken = this.jwtTokenProvider.createRefreshToken(user.getUserNo(), user.getUserId(), user.getRole().name());
 
         // 4. refresh token DB에 저장(보안 및 토큰 재발급 검증용)
         RefreshToken tokenEntity = RefreshToken.builder()
@@ -71,7 +76,7 @@ public class UserCommandService {
         return TokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
     }
 
-
+    /* 로그아웃 */
     public void logout(String refreshToken) {
         // refreshToken 검증 절차
         this.jwtTokenProvider.validateToken(refreshToken);
@@ -79,5 +84,46 @@ public class UserCommandService {
         String userId = this.jwtTokenProvider.getUserIdFromJWT(refreshToken);
 
         this.userAuthRepository.deleteById(userId);
+    }
+
+    /* 회원 정보(email, password) 수정 */
+    @Transactional
+    public void updateUser(UserDetails userDetails, @Valid UserUpdateRequest userUpdateRequest) {
+        // DB에서 유저 데이터 가져오기
+        User user = this.userRepository.findByUserId(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("일치하는 회원정보가 없습니다"));
+
+        user.updateUser(userUpdateRequest.getEmail(), userUpdateRequest.getPhoneNum());
+    }
+
+    /* 회원 비밀번호 수정*/
+    @Transactional
+    public void updateUserPassword(UserDetails userDetails, @Valid UserPwdUpdateRequest userPwdUpdateRequest) {
+        // DB에서 유저 데이터 가져오기
+        User user = this.userRepository.findByUserId(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("일치하는 회원정보가 없습니다"));
+
+        // 입력한 비밀번호가 DB에 저장된 회원 비밀번호와 일치하는지 체크.
+        // 1. 입력한 Password가 기존 Password와 일치하는지 체크
+        if (this.passwordEncoder.matches(userPwdUpdateRequest.getResentPassword(), user.getPassword())) {
+            // 2. 새로 입력한 Password와 재검증용 Password가 일치하는지 체크
+            if (userPwdUpdateRequest.getNewPassword().equals(userPwdUpdateRequest.getCheckNewPassword())) {
+                user.setEncodedPassword(this.passwordEncoder.encode(userPwdUpdateRequest.getNewPassword()));
+            }else {
+                throw new BadCredentialsException("비밀번호 불일치");
+            }
+        }else {
+            throw new BadCredentialsException("비밀번호 불일치");
+        }
+
+    }
+
+    @Transactional
+    public void deleteUser(UserDetails userDetails) {
+        // DB에서 일치하는 유저 가져오기
+        User user = this.userRepository.findByUserId(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("일치하는 회원이 없습니다."));
+        // DB에서
+        user.inActiveUser();
     }
 }
