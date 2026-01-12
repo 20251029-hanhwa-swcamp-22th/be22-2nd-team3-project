@@ -25,4 +25,6 @@ public interface DishMapper {
 	 * @return 해당 사용자의 요리 DTO 리스트
 	 */
 	List<DishDTO> selectDishesByUser(@Param("userNo") int userNo);
+
+	List<DishDTO> selectDishesByUsername(@Param("userId") String username);
 }
