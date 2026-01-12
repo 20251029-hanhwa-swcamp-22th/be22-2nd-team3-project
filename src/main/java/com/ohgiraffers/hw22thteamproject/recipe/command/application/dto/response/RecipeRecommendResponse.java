@@ -1,4 +1,4 @@
-package com.ohgiraffers.hw22thteamproject.recipe.query.dto.response;
+package com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response;
 
 import java.util.List;
 

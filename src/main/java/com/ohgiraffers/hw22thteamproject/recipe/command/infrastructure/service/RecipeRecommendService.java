@@ -1,4 +1,4 @@
-package com.ohgiraffers.hw22thteamproject.recipe.query.service;
+package com.ohgiraffers.hw22thteamproject.recipe.command.infrastructure.service;
 
 import java.util.Map;
 
@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import com.ohgiraffers.hw22thteamproject.recipe.query.dto.request.RecipeRecommendRequest;
-import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.RecipeRecommendResponse;
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeRecommendRequest;
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response.RecipeRecommendResponse;
 
 @Service
 public class RecipeRecommendService {

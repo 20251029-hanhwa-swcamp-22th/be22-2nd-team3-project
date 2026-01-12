@@ -1,9 +1,8 @@
-package com.ohgiraffers.hw22thteamproject.recipe.query.controller;
+package com.ohgiraffers.hw22thteamproject.recipe.command.application.controller;
 
-import com.ohgiraffers.hw22thteamproject.recipe.query.dto.request.RecipeRecommendRequest;
-import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.RecipeRecommendResponse;
-import com.ohgiraffers.hw22thteamproject.recipe.query.service.RecipeQueryService;
-import com.ohgiraffers.hw22thteamproject.recipe.query.service.RecipeRecommendService;
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeRecommendRequest;
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response.RecipeRecommendResponse;
+import com.ohgiraffers.hw22thteamproject.recipe.command.infrastructure.service.RecipeRecommendService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/recipes")
 @RequiredArgsConstructor
-public class RecipeRecommendController {
+public class RecipeRecommendCommandController {
 
 	private final RecipeRecommendService recipeRecommendService;
 

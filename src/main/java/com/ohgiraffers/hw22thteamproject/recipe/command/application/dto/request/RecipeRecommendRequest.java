@@ -1,4 +1,4 @@
-package com.ohgiraffers.hw22thteamproject.recipe.query.dto.request;
+package com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request;
 
 import java.util.List;
 
