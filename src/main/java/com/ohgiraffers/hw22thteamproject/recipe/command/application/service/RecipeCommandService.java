@@ -5,7 +5,6 @@ import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.RecommendRecipe;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.RecommendRecipeRepository;
 import com.ohgiraffers.hw22thteamproject.recipe.command.infrastructure.service.RecipeRecommendService;
-import com.ohgiraffers.hw22thteamproject.user.command.domain.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,27 +34,36 @@ public class RecipeCommandService {
 	private final DishMapper dishMapper;
 	private final UserMapper userMapper;
 	private final ModelMapper modelMapper;
-  private final RecipeRecommendService recipeRecommendService;
-  private final RecommendRecipeRepository recommendRecipeRepository;
+	private final RecipeRecommendService recipeRecommendService;
+	private final RecommendRecipeRepository recommendRecipeRepository;
+
 	@Transactional
-	public Integer registRecipe(RecipeCreateRequest request) {
+	public Integer registRecipe(RecipeCreateRequest request, String username) { // username 파라미터 추가
 
-		UserDTO userDTO = userMapper.selectUserByUserId(request.getUserId());
-		// .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+		// 1. UserDetails에서 가져온 username(ID)으로 실제 DB 유저 정보 조회
+		UserDTO userDTO = userMapper.selectUserByUserId(username);
 
+		if (userDTO == null) {
+			throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+		}
+
+		// 2. 카테고리 조회
 		DishCategoryDTO dishCategoryDTO = dishCategoryMapper.selectDishCategoryById(request.getDishCategoryNo())
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
 
+		// 3. DTO -> Entity 변환
 		DishCategory dishCategoryEntity = modelMapper.map(dishCategoryDTO, DishCategory.class);
-		User user = modelMapper.map(userDTO, User.class);
+		User user = modelMapper.map(userDTO, User.class); // 조회된 유저 정보를 Entity로 변환
 
+		// 4. Dish 생성 (연관관계 설정)
 		Dish newDish = Dish.builder()
 			.dishName(request.getDishName())
 			.dishImgFileRoute(request.getDishImgFileRoute())
-			.userNo(user)
+			.userNo(user) // DB에서 조회한 User Entity(PK 포함) 주입
 			.dishCategoryNo(dishCategoryEntity)
 			.build();
 
+		// 5. Recipe 생성 및 Dish에 추가
 		if (request.getRecipes() != null) {
 			request.getRecipes().forEach(step -> {
 				Recipe recipe = Recipe.builder()
@@ -99,24 +107,36 @@ public class RecipeCommandService {
 				dishEntity.getRecipes().add(recipe);
 			});
 		}
+
+		// update는 JPA 영속성 컨텍스트에 의해 트랜잭션 종료 시 자동 반영됨 (Dirty Checking)
 	}
 
 	@Transactional
 	public void deleteRecipe(Integer dishNo) {
-
 		dishRepository.deleteById(dishNo);
-
 	}
 
-  @Transactional
-  public RecipeRecommendResponse getRecipeRecommendation(RecipeRecommendRequest request, String username) {
-    RecipeRecommendResponse recipeRecommendation = recipeRecommendService.getRecipeRecommendation(request);
+	@Transactional
+	public RecipeRecommendResponse getRecipeRecommendation(RecipeRecommendRequest request, String username) {
+		// 1. AI 추천 서비스 호출
+		RecipeRecommendResponse recipeRecommendation = recipeRecommendService.getRecipeRecommendation(request);
 
-    RecommendRecipe recommendRecipe = modelMapper.map(recipeRecommendation,RecommendRecipe.class);
-    User user = modelMapper.map(userMapper.selectUserByUserId(username), User.class);
-    recommendRecipe.setUserNo(user.getUserNo().intValue());
+		// 2. 추천 결과 저장용 엔티티 변환
+		RecommendRecipe recommendRecipe = modelMapper.map(recipeRecommendation, RecommendRecipe.class);
 
-    recommendRecipeRepository.save(recommendRecipe);
-    return recipeRecommendation;
-  }
+		// 3. UserDetails에서 가져온 username으로 유저 조회
+		UserDTO userDTO = userMapper.selectUserByUserId(username);
+		if (userDTO == null) {
+			throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
+		}
+
+		// 4. 조회된 유저의 PK(userNo)를 설정
+		User user = modelMapper.map(userDTO, User.class);
+
+		// RecommendRecipe 엔티티의 userNo 필드 타입에 맞게 설정 (int로 가정)
+		recommendRecipe.setUserNo(user.getUserNo().intValue());
+
+		recommendRecipeRepository.save(recommendRecipe);
+		return recipeRecommendation;
+	}
 }
