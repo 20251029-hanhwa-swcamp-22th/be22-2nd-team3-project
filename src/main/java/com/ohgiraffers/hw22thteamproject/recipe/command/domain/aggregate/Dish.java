@@ -55,6 +55,7 @@ public class Dish {
 
 	@NotNull
 	@Builder.Default
+	@ColumnDefault("current_timestamp()")
 	@Column(name = "created_at", nullable = false, updatable = false)
 	private LocalDateTime createdAt = LocalDateTime.now();
 
