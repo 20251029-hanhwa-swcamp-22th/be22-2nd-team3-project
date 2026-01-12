@@ -1,5 +1,6 @@
 package com.ohgiraffers.hw22thteamproject.statistics.query.service;
 
+import com.ohgiraffers.hw22thteamproject.statistics.query.dto.request.DisposalCostRequest;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,12 @@ public class StatisticsQueryService {
 
 	private final StatisticsMapper statisticsMapper;
 
+	/**
+	 * 월별 지출
+	 * @param userNo
+	 * @param yearMonth
+	 * @return
+	 */
 	public Map<String, Object> getMonthlyPurchaseDetails(int userNo, String yearMonth) {
 
 		List<MonthlyPurchaseDTO> list = statisticsMapper.selectMonthlyPurchaseList(userNo, yearMonth);
@@ -38,6 +45,11 @@ public class StatisticsQueryService {
 
 	}
 
+	/**
+	 * 삭자재별 구매내역
+	 * @param userNo
+	 * @return
+	 */
 	public List<IngredientPurchaseDTO> getIngredientPurchase(int userNo){
 		List<IngredientPurchaseDTO> list = statisticsMapper.selectIngredientPurchaseList(userNo);
 
@@ -58,17 +70,28 @@ public class StatisticsQueryService {
 		return list;
 	}
 
+	/**
+	 * 카테고리별
+	 * @param userNo
+	 * @return
+	 */
 	public List<CategoryPurchaseDTO> getCategoryExpenseStats(int userNo) {
 		return statisticsMapper.selectCategoryPurchaseList(userNo);
 	}
 
-	public DisposalCostResponse getDisposalHistory(int userNo, String startDate, String endDate) {
+	/**
+	 * 기간내폐기조회
+	 * @param userNo
+	 * @param disposalCostRequest
+	 * @return
+	 */
+	public DisposalCostResponse getDisposalCost(int userNo, DisposalCostRequest disposalCostRequest) {
 
-		List<DisposalHistoryDTO> list = statisticsMapper.selectDisposalHistoryList(userNo, startDate, endDate);
+		List<DisposalCostDTO> list = statisticsMapper.selectDisposalCostList(userNo, disposalCostRequest);
 
 		long totalCost = 0;
 
-		totalCost = list.stream().mapToLong(DisposalHistoryDTO::getDisposalCost)
+		totalCost = list.stream().mapToLong(DisposalCostDTO::getDisposalCost)
 			.sum();
 
 		return DisposalCostResponse.builder()
@@ -76,6 +99,11 @@ public class StatisticsQueryService {
 			.build();
 	}
 
+	/**
+	 * 월별 폐기
+	 * @param userNo
+	 * @return
+	 */
 	public List<MonthlyDisposalDTO> getMonthlyDisposalList(int userNo) {
     List<MonthlyDisposalDTO> list = statisticsMapper.selectMonthlyDisposalList(userNo);
 

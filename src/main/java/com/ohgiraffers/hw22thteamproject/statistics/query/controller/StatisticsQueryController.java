@@ -9,12 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.ohgiraffers.hw22thteamproject.common.dto.ApiResponse;
+import com.ohgiraffers.hw22thteamproject.statistics.query.dto.request.DisposalCostRequest;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.CategoryPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.DisposalCostResponse;
-import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.DisposalHistoryDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.IngredientPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.MonthlyDisposalDTO;
-import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.MonthlyPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.service.StatisticsQueryService;
 
 @RestController
@@ -51,12 +50,11 @@ public class StatisticsQueryController {
 	}
 
 	@GetMapping("statistics/disposal/{userNo}")
-	public ResponseEntity<ApiResponse<DisposalCostResponse>> getDisposalHistoryByUser(
+	public ResponseEntity<ApiResponse<DisposalCostResponse>> getDisposalCostByUser(
 		@PathVariable int userNo,
-		@RequestParam(required = false) String startDate,
-		@RequestParam(required = false) String endDate
+		DisposalCostRequest disposalCostRequest
 	) {
-		DisposalCostResponse result = statisticsQueryService.getDisposalHistory(userNo, startDate, endDate);
+		DisposalCostResponse result = statisticsQueryService.getDisposalCost(userNo, disposalCostRequest);
 
 		return ResponseEntity.ok(ApiResponse.success(result));
 	}

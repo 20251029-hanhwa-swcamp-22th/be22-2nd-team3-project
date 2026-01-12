@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DisposalHistoryDTO {
+public class DisposalCostDTO {
 	private Integer disposalCost;
 }
