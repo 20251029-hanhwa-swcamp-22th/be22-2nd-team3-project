@@ -132,12 +132,12 @@ CREATE TABLE `notification`
 DROP TABLE IF EXISTS `rcd_recipe`;
 CREATE TABLE `rcd_recipe`
 (
-    `recommend_recipe`         INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    `rcd_recipe_no`         INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     `user_no`                  INT                            NOT NULL,
     `dish_category_no`         INT                            NOT NULL,
     `rcd_recipe_dish_name`     VARCHAR(20)                    NOT NULL,
     `rcd_recipe_ingredients`   VARCHAR(1000)                  NOT NULL,
-    `rcd_recipe_substitutions` VARCHAR(1000)                  NOT NULL,
+    `rcd_recipe_substitutions` VARCHAR(1000)                  NULL,
     `rcd_recipe_cookery`       VARCHAR(2000)                  NOT NULL,
     `rcd_recipe_tips`          VARCHAR(2000)                  NOT NULL,
     FOREIGN KEY (`user_no`) REFERENCES `user` (`user_no`),
