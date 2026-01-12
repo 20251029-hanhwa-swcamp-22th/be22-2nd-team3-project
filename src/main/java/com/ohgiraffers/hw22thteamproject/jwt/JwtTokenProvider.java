@@ -93,4 +93,13 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
+    public Date getIssuedAtDateFromJWT(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claims.getIssuedAt();
+    }
+
 }
