@@ -17,7 +17,6 @@ public class UserQueryService {
 
     private final UserMapper userMapper;
 
-
     @Transactional(readOnly = true)
     public UserDetailResponse getUser(String userId) {
         // 조회 결과가 없을 경우 예외 발생, 있을 경우 ProductDTO 반환

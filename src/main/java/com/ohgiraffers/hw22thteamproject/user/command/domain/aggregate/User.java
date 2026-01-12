@@ -66,4 +66,10 @@ public class User {
         this.password = encodedPassword;
     }
 
+    /* 회원 email, phoneNum update 메서드 */
+    public void updateUser(String email, String phoneNum) {
+        this.email = email;
+        this.phoneNum = phoneNum;
+    }
+
 }
