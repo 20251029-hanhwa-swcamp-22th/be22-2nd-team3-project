@@ -55,8 +55,14 @@ public class SecurityConfig {
                 // 요청 http method, url 기준으로 인증, 인가 필요 여부를 설정
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
-                                // 임시: 모든 요청 허용 (테스트용)
+                                .requestMatchers(
+                                        HttpMethod.POST,
+                                        "/api/v1/users",
+                                        "/api/v1/auth/login"
+                                ).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/users/").hasAuthority("USER")
+                                // DB삽입 오류로 인한 401에러 차단
+                                .requestMatchers("/error").permitAll()
                                 .anyRequest().authenticated()
                 )
                 // UsernamePasswordAuthenticationFilter 앞에 jwtAuthenticationFilter 필터를 추가
