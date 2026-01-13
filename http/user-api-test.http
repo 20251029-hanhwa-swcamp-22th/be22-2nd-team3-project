@@ -1,4 +1,3 @@
-
 ### 회원 가입
 POST http://localhost:8080/api/v1/users
 Content-Type: application/json
@@ -68,28 +67,4 @@ Content-Type: application/json
 
 ### 회원탈퇴
 DELETE http://localhost:8080/api/v1/users
-Authorization: Bearer {{auth_token}}
-
-### 알람 필터링 테스트
-POST http://localhost:8080/api/v1/notification
-Authorization: Bearer {{auth_token}}
-
-
-### 식재로 등록
-POST http://localhost:8080/api/v1/ingredient-stock
-Content-Type: application/json
-Authorization: Bearer {{auth_token}}
-
-{
-  "ingredientStockName": "왕만두",
-  "ingredientStockCategory": "processed",
-  "ingredientStockBoughtAt": "2026-01-13",
-  "ingredientStockExpiredAt": "2028-10-24",
-  "ingredientStockTotalCost": 15000,
-  "ingredientStockTotalQuantity": 10,
-  "ingredientStockUnit": "ea"
-}
-
-### 등록 식재료 조회
-GET http://localhost:8080/api/v1/ingredient-stocks
 Authorization: Bearer {{auth_token}}

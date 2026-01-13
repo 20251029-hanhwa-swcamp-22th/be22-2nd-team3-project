@@ -69,4 +69,8 @@ public class IngredientStock {
     public void InitTime() {
         this.ingredientStockNowQuantity = this.ingredientStockTotalQuantity;
     }
+
+    public void updateIngredientStockNowQuantity(long ingredientStockNowQuantity) {
+        this.ingredientStockNowQuantity = this.ingredientStockNowQuantity - ingredientStockNowQuantity;
+    }
 }

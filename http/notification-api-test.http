@@ -1,0 +1,3 @@
+### 알람 필터링 테스트
+POST http://localhost:8080/api/v1/notification
+Authorization: Bearer {{auth_token}}
