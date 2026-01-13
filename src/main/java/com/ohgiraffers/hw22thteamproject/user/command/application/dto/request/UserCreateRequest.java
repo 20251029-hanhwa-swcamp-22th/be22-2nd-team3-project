@@ -1,6 +1,7 @@
 package com.ohgiraffers.hw22thteamproject.user.command.application.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -12,11 +13,11 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class UserCreateRequest {
 
-    @NotBlank(message = "아이디는 필수 입력 값입니다.")
+    @NotNull(message = "아이디는 필수 입력 값입니다.")
     @Size(min = 8, max = 15, message = "아이디는 8자에서 15자 사이여야 합니다.")
     private final String userId;
 
-    @NotBlank(message = "비밀번호는 필수 입력 값입니다.")
+    @NotNull(message = "비밀번호는 필수 입력 값입니다.")
     // 정규표현식: 최소 8자, 영문(대소문자 상관없음)과 특수문자 각각 최소 1개 포함
     @Pattern(
             regexp = "^(?=.*[A-Za-z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).{8,}$",

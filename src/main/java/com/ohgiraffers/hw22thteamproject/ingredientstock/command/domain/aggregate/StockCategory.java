@@ -1,4 +1,10 @@
 package com.ohgiraffers.hw22thteamproject.ingredientstock.command.domain.aggregate;
 
-public class SampleClass {
+public enum StockCategory {
+
+    produce,
+    livestock,
+    seafood,
+    processed
+
 }
