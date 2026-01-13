@@ -63,7 +63,9 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/v1/users/").hasAuthority("USER")
                                 // DB삽입 오류로 인한 401에러 차단
                                 .requestMatchers("/error").permitAll()
-                                .anyRequest().permitAll()
+                                // swagger api
+                                .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+                                .anyRequest().authenticated()
                 )
                 // UsernamePasswordAuthenticationFilter 앞에 jwtAuthenticationFilter 필터를 추가
                 .addFilterBefore(
