@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RecipeRecommendResponse {
+public class RecommendRecipeResponse {
   private DishCategoryEnum dishCategoryEnum;          // 요리 카테고리
   private String dishName;                    // 추천 요리 이름
   private List<IngredientDetail> ingredients; // 필요한 재료 정보

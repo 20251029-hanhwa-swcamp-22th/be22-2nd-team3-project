@@ -8,7 +8,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeRecommendRequest;
-import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response.RecipeRecommendResponse;
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response.RecommendRecipeResponse;
 
 @Service
 public class RecipeRecommendService {
@@ -26,7 +26,7 @@ public class RecipeRecommendService {
 		this.chatClient = builder.build();
 	}
 
-  public RecipeRecommendResponse getRecipeRecommendation(RecipeRecommendRequest request) {
+  public RecommendRecipeResponse getRecipeRecommendation(RecipeRecommendRequest request) {
     return chatClient.prompt()
         // 시스템 프롬프트 설정 (전문 요리사 페르소나 등)
         .system(s -> s.text(systemPromptResource))
@@ -44,6 +44,6 @@ public class RecipeRecommendService {
             ))
         )
         .call()
-        .entity(RecipeRecommendResponse.class);
+        .entity(RecommendRecipeResponse.class);
   }
 }

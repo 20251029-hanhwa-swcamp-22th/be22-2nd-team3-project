@@ -1,11 +1,17 @@
 package com.ohgiraffers.hw22thteamproject.recipe.command.application.controller;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.ohgiraffers.hw22thteamproject.common.dto.ApiResponse;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeCreateRequest;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeRecommendRequest;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeUpdateRequest;
-import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response.RecipeRecommendResponse;
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response.AdoptRecommendedResponse;
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response.RecommendRecipeResponse;
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.service.DishCommandService;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.service.RecipeCommandService;
+import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.DishDTO;
 import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.RecipeDTO;
 
 import jakarta.validation.Valid;
@@ -23,6 +29,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 public class RecipeCommandController {
 
 	private final RecipeCommandService recipeCommandService;
+	private final DishCommandService dishCommandService;
 
 	/**
 	 * 레시피 신규 등록
@@ -74,12 +81,29 @@ public class RecipeCommandController {
 	 * @return 레시피 추천 결과
 	 */
 	@PostMapping("/recommend")
-	public ResponseEntity<RecipeRecommendResponse> recommendRecipe(
+	public ResponseEntity<ApiResponse<RecommendRecipeResponse>> recommendRecipe(
 		@RequestBody RecipeRecommendRequest request,
 		@AuthenticationPrincipal UserDetails userDetails) {
 
 		// userDetails.getUsername()을 통해 로그인한 사용자 ID 전달
-		RecipeRecommendResponse response = recipeCommandService.getRecipeRecommendation(request, userDetails.getUsername());
-		return ResponseEntity.ok(response);
+		RecommendRecipeResponse response = recipeCommandService.getRecipeRecommendation(request, userDetails.getUsername());
+		return ResponseEntity.ok(ApiResponse.success(response));
+	}
+
+	/**
+	 * 추천 레시피를 유저 레시피로 등록
+	 * @param recommendRecipeNo 추천 레시피 번호
+	 * @param userDetails 유저 정보
+	 * @return 저장된 recipe와 dish 정보
+	 */
+	@GetMapping("/recommend/save")
+	public ResponseEntity<ApiResponse<AdoptRecommendedResponse>> adoptRecommendedRecipe(
+		@RequestParam Integer recommendRecipeNo,
+		@AuthenticationPrincipal UserDetails userDetails
+	){
+		DishDTO responseDish = dishCommandService.saveRecommendedToMyDish(recommendRecipeNo, userDetails.getUsername());
+		RecipeDTO responseRecipe = recipeCommandService.saveRecommendedToMyRecipe(recommendRecipeNo,responseDish.getDishNo());
+		AdoptRecommendedResponse adoptRecommendedResponse= new AdoptRecommendedResponse(responseRecipe,responseDish);
+		return ResponseEntity.ok(ApiResponse.success(adoptRecommendedResponse));
 	}
 }

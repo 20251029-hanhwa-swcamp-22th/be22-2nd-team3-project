@@ -2,30 +2,26 @@ package com.ohgiraffers.hw22thteamproject.recipe.command.application.service;
 
 import java.util.List;
 
-import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.CookeryUtils;
-import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.RecipeIngredient;
-import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeRecommendRequest;
-import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response.RecipeRecommendResponse;
-import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.RecommendRecipe;
-import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.DishCategoryRepository;
-import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.RecipeRepository;
-import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.RecommendRecipeRepository;
-import com.ohgiraffers.hw22thteamproject.recipe.command.infrastructure.service.RecipeRecommendService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.CookeryUtils;
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.RecipeIngredient;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeCreateRequest;
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeRecommendRequest;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeUpdateRequest;
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response.RecommendRecipeResponse;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.Dish;
-import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.DishCategory;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.Recipe;
+import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.RecommendRecipe;
+import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.DishCategoryRepository;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.DishRepository;
+import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.RecipeRepository;
+import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.RecommendRecipeRepository;
+import com.ohgiraffers.hw22thteamproject.recipe.command.infrastructure.service.RecipeRecommendService;
 import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.RecipeDTO;
-import com.ohgiraffers.hw22thteamproject.recipe.query.mapper.DishCategoryMapper;
-import com.ohgiraffers.hw22thteamproject.recipe.query.mapper.DishMapper;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.User;
-import com.ohgiraffers.hw22thteamproject.user.command.domain.repository.UserRepository;
 import com.ohgiraffers.hw22thteamproject.user.query.dto.response.UserDTO;
 import com.ohgiraffers.hw22thteamproject.user.query.mapper.UserMapper;
 
@@ -48,13 +44,13 @@ public class RecipeCommandService {
 
 		// 1. Dish 조회
 		Dish dish = dishRepository.findByDishName(request.getDishName())
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 음식입니다."));
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 음식입니다."));
 
 		// 2. Recipe 생성
 		Recipe savedRecipe = Recipe.builder()
-				.dishNo(dish)
-				.recipeCookery(CookeryUtils.listToString(request.getCookery()))
-				.build();
+			.dishNo(dish)
+			.recipeCookery(CookeryUtils.listToString(request.getCookery()))
+			.build();
 
 		Integer id = recipeRepository.save(savedRecipe).getId();
 		return id;
@@ -69,12 +65,12 @@ public class RecipeCommandService {
 
 		// 재료 수정
 		List<RecipeIngredient> ingredients = request.getIngredients();
-		if(ingredients != null)
+		if (ingredients != null)
 			updatedRecipe.setRecipeIngredient(RecipeIngredient.listToString(request.getIngredients()));
 
 		// 조리법 수정
 		List<String> cookery = request.getCookery();
-		if(cookery != null)
+		if (cookery != null)
 			updatedRecipe.setRecipeCookery(CookeryUtils.listToString(request.getCookery()));
 
 		return modelMapper.map(updatedRecipe, RecipeDTO.class);
@@ -86,9 +82,9 @@ public class RecipeCommandService {
 	}
 
 	@Transactional
-	public RecipeRecommendResponse getRecipeRecommendation(RecipeRecommendRequest request, String username) {
+	public RecommendRecipeResponse getRecipeRecommendation(RecipeRecommendRequest request, String username) {
 		// 1. AI 추천 서비스 호출
-		RecipeRecommendResponse recipeRecommendation = recipeRecommendService.getRecipeRecommendation(request);
+		RecommendRecipeResponse recipeRecommendation = recipeRecommendService.getRecipeRecommendation(request);
 
 		// 2. 추천 결과 저장용 엔티티 변환
 		RecommendRecipe recommendRecipe = modelMapper.map(recipeRecommendation, RecommendRecipe.class);
@@ -107,5 +103,24 @@ public class RecipeCommandService {
 
 		recommendRecipeRepository.save(recommendRecipe);
 		return recipeRecommendation;
+	}
+
+	@Transactional
+	public RecipeDTO saveRecommendedToMyRecipe(Integer recommendRecipeNo, Integer dishNo) {
+		// 음식 조회
+		Dish dish = dishRepository.findById(dishNo)
+			.orElseThrow(() -> new IllegalArgumentException("음식이 조회되지 않습니다"));
+		// 추천레시피 조회
+		RecommendRecipe rcdRecipe = recommendRecipeRepository.findById(recommendRecipeNo)
+			.orElseThrow(() -> new IllegalArgumentException("추천레시피 데이터 없음"));
+		return modelMapper.map(
+			recipeRepository.save(
+				Recipe.builder()
+					.dishNo(dish)
+					.recipeIngredient(rcdRecipe.getRcdRecipeIngredients())
+					.recipeCookery(rcdRecipe.getRcdRecipeCookery())
+					.build()
+			), RecipeDTO.class
+		);
 	}
 }
