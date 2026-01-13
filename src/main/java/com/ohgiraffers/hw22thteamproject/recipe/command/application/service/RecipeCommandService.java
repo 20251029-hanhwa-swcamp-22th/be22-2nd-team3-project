@@ -1,6 +1,6 @@
 package com.ohgiraffers.hw22thteamproject.recipe.command.application.service;
 
-import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.ListAndStringConverter;
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.CookeryUtils;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeRecommendRequest;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response.RecipeRecommendResponse;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.RecommendRecipe;
@@ -58,7 +58,7 @@ public class RecipeCommandService {
 		// 3. Recipe 생성
 		Recipe savedRecipe = Recipe.builder()
 			.dishNo(dish)
-			.recipeCookery(ListAndStringConverter.listToString(request.getCookery()))
+			.recipeCookery(CookeryUtils.listToString(request.getCookery()))
 			.build();
 
 		Integer id = recipeRepository.save(savedRecipe).getId();
