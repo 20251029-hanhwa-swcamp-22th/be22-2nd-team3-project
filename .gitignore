@@ -1,5 +1,8 @@
 HELP.md
+NEWFEATURE.md
 application-dev.yml
+database_schema.sql
+sample_ingredient_stock_data.sql
 
 .gradle
 build/

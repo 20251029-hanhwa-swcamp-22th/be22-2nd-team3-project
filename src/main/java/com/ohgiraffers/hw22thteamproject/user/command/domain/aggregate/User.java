@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -17,6 +18,7 @@ import java.util.Date;
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA만 기본 생성자 사용 가능
 @Getter
 @EntityListeners(AuditingEntityListener.class) // Entity 삽입, 수정 감지 시 시간 기록
+/* JPA의 delete 명령이 실행될 때 실제로 수행할 Native SQL을 지정. (Soft Delete 구현) */
 public class User {
 
     @Id
@@ -48,6 +50,10 @@ public class User {
     @Column(name = "user_is_notice_active", nullable = false)
     private String isNoticeActive = Constants.NOTICE_DEFAULT_VALUE;
 
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserStatus status = UserStatus.ACTIVE;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role = UserRole.USER;
@@ -66,4 +72,13 @@ public class User {
         this.password = encodedPassword;
     }
 
+    /* 회원 email, phoneNum update 메서드 */
+    public void updateUser(String email, String phoneNum) {
+        this.email = email;
+        this.phoneNum = phoneNum;
+    }
+
+    public void inActiveUser() {
+        this.status = UserStatus.INACTIVE;
+    }
 }

@@ -14,3 +14,13 @@
 - @EnableWebSecurity
 - @EnableMethodSecurity
 
+### JpaAuditingConfig
+- @EnableJpaAuditing
+  - Spring Data JPA에서 엔티티의 생성일, 수정일, 생성자, 수정자 등을 자동으로 관리해주는 '감사(Auditing)' 기능을 활성화하기 위해 사용하는 어노테이션.
+    - @CreatedDate,
+    - @LastModifiedDate,
+    - @CreatedBy,
+    - @LastModifiedBy
+  
+### SwaggerConfig.java
+- Swagger2

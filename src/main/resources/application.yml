@@ -6,4 +6,8 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
   mapper-locations: mappers/**/*.xml
-  type-aliases-package: com.ohgiraffers.hw22thteamproject.user.query.dto
+
+springdoc:
+  packages-to-scan: com.ohgiraffers.hw22thteamproject
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8

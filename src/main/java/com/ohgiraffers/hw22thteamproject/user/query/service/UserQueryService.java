@@ -2,6 +2,7 @@ package com.ohgiraffers.hw22thteamproject.user.query.service;
 
 import com.ohgiraffers.hw22thteamproject.exception.BusinessException;
 import com.ohgiraffers.hw22thteamproject.exception.ErrorCode;
+import com.ohgiraffers.hw22thteamproject.jwt.JwtTokenProvider;
 import com.ohgiraffers.hw22thteamproject.user.query.dto.response.UserDTO;
 import com.ohgiraffers.hw22thteamproject.user.query.dto.response.UserDetailResponse;
 import com.ohgiraffers.hw22thteamproject.user.query.mapper.UserMapper;
@@ -16,7 +17,7 @@ import java.util.Optional;
 public class UserQueryService {
 
     private final UserMapper userMapper;
-
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional(readOnly = true)
     public UserDetailResponse getUser(String userId) {
@@ -27,5 +28,12 @@ public class UserQueryService {
         // 빌더 패턴을 이용해서 ProductDetailResponse 객체 생성
         return UserDetailResponse.builder().user(user).build();
 
+    }
+
+    public UserDetailResponse getUserByToken(String refreshToken) {
+        String userId = this.jwtTokenProvider.getUserIdFromJWT(refreshToken);
+        UserDTO user = Optional.ofNullable(this.userMapper.selectUserByUserId(userId))
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        return UserDetailResponse.builder().user(user).build();
     }
 }
