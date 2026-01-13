@@ -10,12 +10,22 @@ import com.ohgiraffers.hw22thteamproject.ingredientstock.command.domain.aggregat
 import com.ohgiraffers.hw22thteamproject.ingredientstock.command.domain.repository.IngredientStockDomainRepository;
 import com.ohgiraffers.hw22thteamproject.ingredientstock.command.domain.service.IngredientStockDomainService;
 import com.ohgiraffers.hw22thteamproject.jwt.JwtTokenProvider;
+import com.ohgiraffers.hw22thteamproject.notification.command.domain.aggregate.Notification;
+import com.ohgiraffers.hw22thteamproject.notification.command.domain.aggregate.NotificationType;
+import com.ohgiraffers.hw22thteamproject.notification.command.domain.repository.NotificationDomainRepository;
+import com.ohgiraffers.hw22thteamproject.notification.command.infrastructure.repository.JpaNotificationRepository;
+import com.ohgiraffers.hw22thteamproject.notification.command.domain.repository.NotificationTypeDomainRepository;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.User;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +36,8 @@ public class IngredientStockCommandService {
     private final IngredientStockDomainService ingredientStockDomainService;
     private final ModelMapper modelMapper;
     private final IngredientStockDomainRepository ingredientStockDomainRepository;
+    private final NotificationDomainRepository notificationDomainRepository;
+    private final NotificationTypeDomainRepository notificationTypeDomainRepository;
 
     @Transactional
     public IngredientStockCreateResponse registIngredientStock(
@@ -86,5 +98,62 @@ public class IngredientStockCommandService {
                 .ingredientStockNowQuantity(ingredientStock.getIngredientStockNowQuantity())
                 .ingredientStockUnit(ingredientStock.getIngredientStockUnit())
                 .build();
+    }
+
+    /* 식자재를 필터링하여 Notification DB에 저장하는 메서드 */
+    @Transactional
+    public void setIngredientStockNotice(String refreshToken) {
+        // Token 유효성 검사
+        this.jwtTokenProvider.validateToken(refreshToken);
+
+        // user_no 가져오기
+        long userNo = Long.parseLong(this.jwtTokenProvider.getUserNoFromJWT(refreshToken));
+
+        // User 엔티티 가져오기
+        User user = this.userRepository.findByUserNo(userNo);
+
+        // user_no가 일치하는 ingredient_stock 데이터 모두 가져오기
+        List<IngredientStock> ingredientStocks = this.ingredientStockDomainRepository.findAllByUser_UserNo(userNo);
+
+        // 유통기한임박 ingredient stock 추출
+        List<IngredientStock> filteredStockListA = this.ingredientStockDomainService.filterExpiredSoonStock(ingredientStocks);
+
+        // 식재료소진임박 ingredient stock 추출
+        List<IngredientStock> filteredStockListB = this.ingredientStockDomainService.filterLowStock(ingredientStocks);
+
+        // filteredStockListA, filteredStockListB를 notification table에 저장하기 위한 Entity로 변환
+        List<Notification> notifications = new ArrayList<>();
+
+        // Notification Type 가져오기 (1: 유통기한 임박, 2: 재고 부족)
+        NotificationType expiryNotificationType = this.notificationTypeDomainRepository
+                .findByNotificationTypeNo(1)
+                .orElseThrow(() -> new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
+
+        NotificationType lowStockNotificationType = this.notificationTypeDomainRepository
+                .findByNotificationTypeNo(2)
+                .orElseThrow(() -> new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
+
+        // case A) notificationContent= ingredientStockName + "유통기한이" + ingredientStockExpiredAt - now() + "일 남음"
+        LocalDate now = LocalDate.now();
+        for (IngredientStock stock : filteredStockListA) {
+            long daysRemaining = ChronoUnit.DAYS.between(now, stock.getIngredientStockExpiredAt());
+            String content = stock.getIngredientStockName() + " 유통기한이 " + daysRemaining + "일 남음";
+            Notification notification = Notification.createNotification(user, expiryNotificationType, content);
+            notifications.add(notification);
+        }
+
+        // case B) notificationContent= ingredientStockName + "재고가" + ingredientStockNowQuantity + stockUnit + " 남음"
+        for (IngredientStock stock : filteredStockListB) {
+            String content = stock.getIngredientStockName() + " 재고가 "
+                    + stock.getIngredientStockNowQuantity()
+                    + stock.getIngredientStockUnit() + " 남음";
+            Notification notification = Notification.createNotification(user, lowStockNotificationType, content);
+            notifications.add(notification);
+        }
+
+        // 변환한 Entity notification table에 추가.(use notificationRepository to save.)
+        if (!notifications.isEmpty()) {
+            this.notificationDomainRepository.saveAll(notifications);
+        }
     }
 }

@@ -23,10 +23,6 @@ public class NotificationCommandService {
         Date login = this.jwtTokenProvider.getIssuedAtDateFromJWT(refreshToken);
         System.out.println("login = " + login);
 
-        // 2. user_no와 매칭되는 ingredient_stock 데이터 가져오기
-        // 3. 유통기한 72시간 이하인 데이터 필터링
-        // 4. 유통기한 72시간 이상, (g(50), ml(50), ea(50))인 데이터 필터링
-        // 5. 필터링한 데이터를 notification 테이블에 저장
     }
 
 }

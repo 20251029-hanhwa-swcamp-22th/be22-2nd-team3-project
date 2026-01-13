@@ -40,5 +40,11 @@ public class IngredientStockCommandController {
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(response));
     }
 
-
+    @PostMapping("/ingredient-stock/notification")
+    public ResponseEntity<ApiResponse<Void>> setIngredientStockNotice(
+            @CookieValue(name = "refreshToken") String refreshToken
+    ) {
+        this.ingredientStockCommandService.setIngredientStockNotice(refreshToken);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null));
+    }
 }
