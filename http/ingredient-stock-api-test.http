@@ -26,3 +26,7 @@ Authorization: Bearer {{auth_token}}
   "ingredientStockNo": 7,
   "ingredientStockUsedQuantity": 6
 }
+
+### 식재료 알림 설정 (유통기한 임박 및 재고 부족 알림 생성)
+POST http://localhost:8080/api/v1/ingredient-stock/notification
+Authorization: Bearer {{auth_token}}
