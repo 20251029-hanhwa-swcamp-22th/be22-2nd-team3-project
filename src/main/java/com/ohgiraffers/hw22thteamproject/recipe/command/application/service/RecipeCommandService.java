@@ -49,7 +49,7 @@ public class RecipeCommandService {
 
 		// 2. 카테고리 조회
 		DishCategoryDTO dishCategoryDTO = dishCategoryMapper.selectDishCategoryById(request.getDishCategoryNo())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
 
 		// 3. DTO -> Entity 변환
 		DishCategory dishCategoryEntity = modelMapper.map(dishCategoryDTO, DishCategory.class);
@@ -57,20 +57,20 @@ public class RecipeCommandService {
 
 		// 4. Dish 생성 (연관관계 설정)
 		Dish newDish = Dish.builder()
-			.dishName(request.getDishName())
-			.dishImgFileRoute(request.getDishImgFileRoute())
-			.userNo(user) // DB에서 조회한 User Entity(PK 포함) 주입
-			.dishCategoryNo(dishCategoryEntity)
-			.build();
+				.dishName(request.getDishName())
+				.dishImgFileRoute(request.getDishImgFileRoute())
+				.userNo(user) // DB에서 조회한 User Entity(PK 포함) 주입
+				.dishCategoryNo(dishCategoryEntity)
+				.build();
 
 		// 5. Recipe 생성 및 Dish에 추가
 		if (request.getRecipes() != null) {
 			request.getRecipes().forEach(step -> {
 				Recipe recipe = Recipe.builder()
-					.dishNo(newDish)
-					.recipeIngredient(step.getRecipeIngredient())
-					.recipeCookery(step.getRecipeCookery())
-					.build();
+						.dishNo(newDish)
+						.recipeIngredient(step.getRecipeIngredient())
+						.recipeCookery(step.getRecipeCookery())
+						.build();
 				newDish.getRecipes().add(recipe);
 			});
 		}
@@ -84,10 +84,10 @@ public class RecipeCommandService {
 	public void updateRecipe(Integer dishNo, RecipeUpdateRequest request) {
 
 		DishDTO dishDTO = dishMapper.selectDishById(dishNo)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
 
 		DishCategoryDTO dishCategoryDTO = dishCategoryMapper.selectDishCategoryById(request.getDishCategoryNo())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
 
 		DishCategory dishCategoryEntity = modelMapper.map(dishCategoryDTO, DishCategory.class);
 		Dish dishEntity = modelMapper.map(dishDTO, Dish.class);
@@ -100,10 +100,10 @@ public class RecipeCommandService {
 		if (request.getRecipes() != null) {
 			request.getRecipes().forEach(step -> {
 				Recipe recipe = Recipe.builder()
-					.dishNo(dishEntity)
-					.recipeIngredient(step.getRecipeIngredient())
-					.recipeCookery(step.getRecipeCookery())
-					.build();
+						.dishNo(dishEntity)
+						.recipeIngredient(step.getRecipeIngredient())
+						.recipeCookery(step.getRecipeCookery())
+						.build();
 				dishEntity.getRecipes().add(recipe);
 			});
 		}
@@ -138,5 +138,49 @@ public class RecipeCommandService {
 
 		recommendRecipeRepository.save(recommendRecipe);
 		return recipeRecommendation;
+	}
+
+	@Transactional
+	public Integer registRecipeFromRecommend(Integer rcdId, String username) {
+		// 1. 추천 레시피 조회
+		RecommendRecipe rcd = recommendRecipeRepository.findById(rcdId)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 추천 레시피입니다."));
+
+		// 2. 사용자 조회
+		UserDTO userDTO = userMapper.selectUserByUserId(username);
+		if (userDTO == null) {
+			throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+		}
+		User user = modelMapper.map(userDTO, User.class);
+
+		// 3. 카테고리 조회
+		DishCategoryDTO dishCategoryDTO = dishCategoryMapper.selectDishCategoryById(rcd.getDishCategoryNo())
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+		DishCategory dishCategory = modelMapper.map(dishCategoryDTO, DishCategory.class);
+
+		// 4. Dish 생성
+		Dish newDish = Dish.builder()
+				.dishName(rcd.getRcdRecipeDishName())
+				.dishImgFileRoute("default.jpg") // 이미지가 없으므로 기본값 설정
+				.userNo(user)
+				.dishCategoryNo(dishCategory)
+				.build();
+
+		// 5. Recipe 생성 및 추가
+		String fullCookery = rcd.getRcdRecipeCookery();
+		if (rcd.getRcdRecipeTips() != null && !rcd.getRcdRecipeTips().isEmpty()) {
+			fullCookery += "\n\nTip: " + rcd.getRcdRecipeTips();
+		}
+
+		Recipe recipe = Recipe.builder()
+				.dishNo(newDish)
+				.recipeIngredient(rcd.getRcdRecipeIngredients())
+				.recipeCookery(fullCookery)
+				.build();
+		newDish.getRecipes().add(recipe);
+
+		// 6. 저장
+		Dish savedDish = dishRepository.save(newDish);
+		return savedDish.getId();
 	}
 }
