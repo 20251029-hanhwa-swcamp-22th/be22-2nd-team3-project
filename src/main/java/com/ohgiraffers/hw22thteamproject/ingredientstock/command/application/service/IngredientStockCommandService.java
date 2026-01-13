@@ -1,7 +1,11 @@
 package com.ohgiraffers.hw22thteamproject.ingredientstock.command.application.service;
 
+import com.ohgiraffers.hw22thteamproject.exception.BusinessException;
+import com.ohgiraffers.hw22thteamproject.exception.ErrorCode;
 import com.ohgiraffers.hw22thteamproject.ingredientstock.command.application.dto.request.IngredientStockCreateRequest;
+import com.ohgiraffers.hw22thteamproject.ingredientstock.command.application.dto.request.IngredientStockUpdateRequest;
 import com.ohgiraffers.hw22thteamproject.ingredientstock.command.application.dto.response.IngredientStockCreateResponse;
+import com.ohgiraffers.hw22thteamproject.ingredientstock.command.application.dto.response.IngredientStockUpdateResponse;
 import com.ohgiraffers.hw22thteamproject.ingredientstock.command.domain.aggregate.IngredientStock;
 import com.ohgiraffers.hw22thteamproject.ingredientstock.command.domain.repository.IngredientStockDomainRepository;
 import com.ohgiraffers.hw22thteamproject.ingredientstock.command.domain.service.IngredientStockDomainService;
@@ -11,6 +15,7 @@ import com.ohgiraffers.hw22thteamproject.user.command.domain.repository.UserRepo
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +27,7 @@ public class IngredientStockCommandService {
     private final ModelMapper modelMapper;
     private final IngredientStockDomainRepository ingredientStockDomainRepository;
 
+    @Transactional
     public IngredientStockCreateResponse registIngredientStock(
             String refreshToken,
             IngredientStockCreateRequest ingredientStockCreateRequest
@@ -47,4 +53,38 @@ public class IngredientStockCommandService {
         return new IngredientStockCreateResponse(ingredientStock);
     }
 
+    @Transactional
+    public IngredientStockUpdateResponse updateIngredientStock(
+            String refreshToken, // user_no를 가져오기 위한 Token 객체
+            IngredientStockUpdateRequest ingredientStockUpdateRequest // 업데이트 내용을 담고있는 객체
+    ) {
+        // 1. 토큰 유효성 검사
+        this.jwtTokenProvider.validateToken(refreshToken);
+
+        // 2. user_no, ingredient_stock_no 가져오기
+        long userNo = Long.parseLong(this.jwtTokenProvider.getUserNoFromJWT(refreshToken));
+        long ingredientStockNo = ingredientStockUpdateRequest.getIngredientStockNo();
+
+        // 3. ingredient_stock table에서 user_no, ingredient_stock_no 가 일치하는 칼럼
+        // ingredientStockDomainRepository사용해 가져오기
+        IngredientStock ingredientStock = this.ingredientStockDomainRepository
+                .findByUser_UserNoAndIngredientStockNo(userNo, ingredientStockNo)
+                .orElseThrow(() -> new BusinessException(ErrorCode.INGREDIENT_STOCK_NOT_FOUND));
+
+        // 4. ingredientStockUpdateRequest.getIngredientStockNowQuantity() 가져와 불러온 칼럼에 업데이트
+        ingredientStock.updateIngredientStockNowQuantity(ingredientStockUpdateRequest.getIngredientStockUsedQuantity());
+
+        // 4-1. if ingredientStock.getIngredientStockNowQuantity() is under 0, print an error message and throw an error
+        if (ingredientStock.getIngredientStockNowQuantity() < 0) {
+            throw new BusinessException(ErrorCode.INSUFFICIENT_STOCK);
+        }
+
+        // 5. update한 IngredientStock object return
+        return IngredientStockUpdateResponse.builder()
+                .ingredientStockName(ingredientStock.getIngredientStockName())
+                .ingredientStockTotalQuantity(ingredientStock.getIngredientStockTotalQuantity())
+                .ingredientStockNowQuantity(ingredientStock.getIngredientStockNowQuantity())
+                .ingredientStockUnit(ingredientStock.getIngredientStockUnit())
+                .build();
+    }
 }
