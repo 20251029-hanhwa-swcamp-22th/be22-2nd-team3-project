@@ -1,6 +1,7 @@
 HELP.md
 NEWFEATURE.md
 application-dev.yml
+database_schema.md
 
 .gradle
 build/
