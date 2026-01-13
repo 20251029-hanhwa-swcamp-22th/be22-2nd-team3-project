@@ -53,7 +53,7 @@ CREATE TABLE `dish`
     `dish_no`             INT AUTO_INCREMENT PRIMARY KEY,
     `user_no`             INT          NOT NULL,
     `dish_category_no`    INT          NOT NULL,
-    `dish_name`           VARCHAR(20)  NOT NULL,
+    `dish_name`           VARCHAR(100) NOT NULL,
     `dish_img_file_route` VARCHAR(300) NULL,
     `dish_is_marked`      BOOLEAN      NOT NULL DEFAULT FALSE,
     `created_at`          DATETIME     NOT NULL DEFAULT current_timestamp(),
@@ -132,10 +132,10 @@ CREATE TABLE `notification`
 DROP TABLE IF EXISTS `rcd_recipe`;
 CREATE TABLE `rcd_recipe`
 (
-    `rcd_recipe_no`         INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    `rcd_recipe_no`            INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     `user_no`                  INT                            NOT NULL,
     `dish_category_no`         INT                            NOT NULL,
-    `rcd_recipe_dish_name`     VARCHAR(20)                    NOT NULL,
+    `rcd_recipe_dish_name`     VARCHAR(100)                   NOT NULL,
     `rcd_recipe_ingredients`   VARCHAR(1000)                  NOT NULL,
     `rcd_recipe_substitutions` VARCHAR(1000)                  NULL,
     `rcd_recipe_cookery`       VARCHAR(2000)                  NOT NULL,
