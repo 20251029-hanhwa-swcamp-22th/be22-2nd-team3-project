@@ -1,3 +1,13 @@
+# User Package 구현 기능
+1. 회원가입: POST /api/v1/users
+2. 로그인: POST /api/v1/user/login
+3. 로그아웃: POST /api/v1/user/logout
+4. 회원정보조회(user_id): GET /api/v1/user/{userId}
+5. 내정보조회: GET /api/v1/user/me
+6. 회원정보수정(email, phoneNum): PATCH /api/v1/users
+7. 회원정보수정(password): PATCH /api/v1/users/password
+8. 회원탈퇴: DELETE /api/v1/users
+
 # Command
 - ## Application
 - ## Domain
