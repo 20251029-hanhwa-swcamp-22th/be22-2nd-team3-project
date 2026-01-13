@@ -6,6 +6,7 @@ import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeUpdateRequest;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response.RecipeRecommendResponse;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.service.RecipeCommandService;
+import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.RecipeDTO;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,11 +34,11 @@ public class RecipeCommandController {
 		@RequestBody @Valid RecipeCreateRequest request,
 		@AuthenticationPrincipal UserDetails userDetails) {
 
-		Integer dishNo = recipeCommandService.registRecipe(request);
+		Integer recipeNo = recipeCommandService.registRecipe(request);
 
 		return ResponseEntity
 			.status(HttpStatus.CREATED)
-			.body(ApiResponse.success(dishNo));
+			.body(ApiResponse.success(recipeNo));
 	}
 
 	/**
@@ -45,24 +46,24 @@ public class RecipeCommandController {
 	 * PUT /api/v1/recipes/{dishNo}
 	 */
 	@PutMapping("/update")
-	public ResponseEntity<ApiResponse<Void>> updateRecipe(
+	public ResponseEntity<ApiResponse<RecipeDTO>> updateRecipe(
 		@RequestBody @Valid RecipeUpdateRequest request,
 		@AuthenticationPrincipal UserDetails userDetails) { // 수정 시에도 본인 확인이 필요할 수 있어 추가 권장
 
 		// 서비스 메서드에 username을 전달하여 본인 확인 로직 추가 가능 (현재는 기존 로직 유지하되 확장성 고려)
-		recipeCommandService.updateRecipe(request);
+		RecipeDTO recipeDTO = recipeCommandService.updateRecipe(request);
 
-		return ResponseEntity.ok(ApiResponse.success(null));
+		return ResponseEntity.ok(ApiResponse.success(recipeDTO));
 	}
 
 	/**
 	 * 레시피 삭제
-	 * DELETE /api/v1/recipes/{dishNo}
+	 * DELETE /api/v1/recipes/delete
 	 */
-	@DeleteMapping("/{dishNo}")
-	public ResponseEntity<ApiResponse<Void>> deleteRecipe(@PathVariable Integer dishNo) {
+	@DeleteMapping("/delete")
+	public ResponseEntity<ApiResponse<Void>> deleteRecipe(@PathVariable Integer recipeNo) {
 
-		recipeCommandService.deleteRecipe(dishNo);
+		recipeCommandService.deleteRecipe(recipeNo);
 
 		return ResponseEntity.ok(ApiResponse.success(null));
 	}

@@ -82,7 +82,7 @@ public class RecipeCommandService {
 
 	@Transactional
 	public void deleteRecipe(Integer dishNo) {
-		dishRepository.deleteById(dishNo);
+		recipeRepository.deleteById(dishNo);
 	}
 
 	@Transactional
