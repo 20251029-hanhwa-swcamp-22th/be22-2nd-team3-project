@@ -95,6 +95,15 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
+    public String getUserNoFromJWT(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claims.get("userId", String.class);
+    }
+
     public Date getIssuedAtDateFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .verifyWith(secretKey)

@@ -21,3 +21,6 @@
     - @LastModifiedDate,
     - @CreatedBy,
     - @LastModifiedBy
+  
+### SwaggerConfig.java
+- Swagger2
