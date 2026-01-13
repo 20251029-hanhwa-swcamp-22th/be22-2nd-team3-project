@@ -26,5 +26,5 @@ public interface DishMapper {
 	 */
 	List<DishDTO> selectDishesByUser(@Param("userNo") int userNo);
 
-	List<DishDTO> selectDishesByUsername(@Param("userId") String username);
+	List<DishDTO> selectDishesByUsername(@Param("username") String username);
 }

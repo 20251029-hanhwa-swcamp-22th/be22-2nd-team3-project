@@ -14,9 +14,6 @@ import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.RecipeIn
 public class RecipeCreateRequest {
     @NotBlank(message = "요리 이름은 필수입니다.")
     private String dishName;
-    
-    @NotNull(message = "카테고리 번호는 필수입니다.")
-    private DishCategoryEnum dishCategoryEnum;
 
     @NotNull(message = "재료는 필수입니다.")
     private List<RecipeIngredient> ingredients;

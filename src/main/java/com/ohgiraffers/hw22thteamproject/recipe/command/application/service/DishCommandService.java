@@ -39,61 +39,61 @@ public class DishCommandService {
 		DishDTO resultDish;
 		// 추천레시피 조회
 		RecommendRecipe rcdRecipe = recommendRecipeRepository.findById(recommendRecipeNo)
-				.orElseThrow(() -> new IllegalArgumentException("추천레시피 데이터 없음"));
+			.orElseThrow(() -> new IllegalArgumentException("추천레시피 데이터 없음"));
 		// 추천레시피의 이름으로 음식이 있는지 조회
 		Optional<Dish> dish = dishRepository.findByDishName(rcdRecipe.getRcdRecipeDishName());
 		// 음식이 없을 때 등록
 		if (dish.isEmpty())
-			resultDish = modelMapper.map(
-					dishRepository.save(
-							Dish.builder()
-									.userNo(userRepository.findByUserId(username)
-											.orElseThrow(() -> new IllegalArgumentException("유저 없음")))
-									.dishCategoryNo(dishCategoryRepository.findById(rcdRecipe.getDishCategoryNo())
-											.orElseThrow(() -> new IllegalArgumentException("카테고리 없음")))
-									.dishName(rcdRecipe.getRcdRecipeDishName())
-									.build()),
-					DishDTO.class);
-		// 음식이 있을 때 get
+			resultDish = DishDTO.from(
+				dishRepository.save(
+					Dish.builder()
+						.userNo(userRepository.findByUserId(username)
+							.orElseThrow(() -> new IllegalArgumentException("유저 없음")))
+						.dishCategoryNo(dishCategoryRepository.findById(rcdRecipe.getDishCategoryNo())
+							.orElseThrow(() -> new IllegalArgumentException("카테고리 없음")))
+						.dishName(rcdRecipe.getRcdRecipeDishName())
+						.build())
+			);
+			// 음식이 있을 때 get
 		else
-			resultDish = modelMapper.map(dish.get(), DishDTO.class);
+			resultDish = DishDTO.from(dish.get());
 		return resultDish;
 	}
 
 	@Transactional
 	public void registDish(
-			DishCreateRequest request,
-			String username) {
+		DishCreateRequest request,
+		String username) {
 
 		// 1. 유저 조회
 		User user = userRepository
-				.findByUserId(username)
-				.orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+			.findByUserId(username)
+			.orElseThrow(() -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
 
 		// 2. 카테고리 조회
 		DishCategory category = dishCategoryRepository
-				.findById(request.getDishCategoryEnum().ordinal() + 1)
-				.orElseThrow(() -> new IllegalArgumentException("해당 카테고리를 찾을 수 없습니다."));
+			.findById(request.getDishCategoryEnum().ordinal() + 1)
+			.orElseThrow(() -> new IllegalArgumentException("해당 카테고리를 찾을 수 없습니다."));
 
 		// 3. Dish 엔티티 생성
 		Dish newDish = Dish.builder()
-				.userNo(user)
-				.dishCategoryNo(category)
-				.dishName(request.getDishName())
-				.dishImgFileRoute(null)
-				.recipes(null)
-				.build();
+			.userNo(user)
+			.dishCategoryNo(category)
+			.dishName(request.getDishName())
+			.dishImgFileRoute(null)
+			.recipes(null)
+			.build();
 
 		dishRepository.save(newDish);
 	}
 
 	@Transactional
 	public void updateDish(
-			DishUpdateRequest request,
-			String username) {
+		DishUpdateRequest request,
+		String username) {
 		// 1. Dish 조회
 		Dish dish = dishRepository.findById(request.getDishNo())
-				.orElseThrow(() -> new IllegalArgumentException("해당 요리를 찾을 수 없습니다."));
+			.orElseThrow(() -> new IllegalArgumentException("해당 요리를 찾을 수 없습니다."));
 
 		// 2. 권한 확인
 		if (!dish.getUserNo().getUserId().equals(username)) {
@@ -106,7 +106,7 @@ public class DishCommandService {
 		}
 		if (request.getDishCategoryEnum() != null) {
 			DishCategory category = dishCategoryRepository.findById(request.getDishCategoryEnum().ordinal() + 1)
-					.orElseThrow(() -> new IllegalArgumentException("해당 카테고리를 찾을 수 없습니다."));
+				.orElseThrow(() -> new IllegalArgumentException("해당 카테고리를 찾을 수 없습니다."));
 			dish.setDishCategoryNo(category);
 		}
 	}
@@ -115,7 +115,7 @@ public class DishCommandService {
 	public void deleteDish(Integer dishNo, String username) {
 		// 1. Dish 조회
 		Dish dish = dishRepository.findById(dishNo)
-				.orElseThrow(() -> new IllegalArgumentException("해당 요리를 찾을 수 없습니다."));
+			.orElseThrow(() -> new IllegalArgumentException("해당 요리를 찾을 수 없습니다."));
 
 		// 2. 권한 확인
 		if (!dish.getUserNo().getUserId().equals(username)) {
@@ -124,7 +124,7 @@ public class DishCommandService {
 
 		// 3. 연관된 Recipe 삭제
 		List<Recipe> recipes = recipeRepository
-				.findByDishNo(dish);
+			.findByDishNo(dish);
 		recipeRepository.deleteAll(recipes);
 
 		// 4. Dish 삭제

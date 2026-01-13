@@ -69,7 +69,7 @@ public class RecipeCommandController {
 	 * DELETE /api/v1/recipes/delete
 	 */
 	@DeleteMapping("/delete")
-	public ResponseEntity<ApiResponse<Void>> deleteRecipe(@PathVariable Integer recipeNo) {
+	public ResponseEntity<ApiResponse<Void>> deleteRecipe(@RequestParam Integer recipeNo) {
 
 		recipeCommandService.deleteRecipe(recipeNo);
 

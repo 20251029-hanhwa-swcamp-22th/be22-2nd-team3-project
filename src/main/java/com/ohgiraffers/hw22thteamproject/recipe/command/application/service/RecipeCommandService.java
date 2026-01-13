@@ -49,6 +49,7 @@ public class RecipeCommandService {
 		// 2. Recipe 생성
 		Recipe savedRecipe = Recipe.builder()
 				.dishNo(dish)
+				.recipeIngredient(RecipeIngredient.listToString(request.getIngredients()))
 				.recipeCookery(CookeryUtils.listToString(request.getCookery()))
 				.build();
 
@@ -113,13 +114,13 @@ public class RecipeCommandService {
 		// 추천레시피 조회
 		RecommendRecipe rcdRecipe = recommendRecipeRepository.findById(recommendRecipeNo)
 				.orElseThrow(() -> new IllegalArgumentException("추천레시피 데이터 없음"));
-		return modelMapper.map(
+		return RecipeDTO.from(
 				recipeRepository.save(
 						Recipe.builder()
 								.dishNo(dish)
 								.recipeIngredient(rcdRecipe.getRcdRecipeIngredients())
 								.recipeCookery(rcdRecipe.getRcdRecipeCookery())
-								.build()),
-				RecipeDTO.class);
+								.build())
+				);
 	}
 }
