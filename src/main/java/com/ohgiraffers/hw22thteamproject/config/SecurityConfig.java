@@ -63,7 +63,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/v1/users/").hasAuthority("USER")
                                 // DB삽입 오류로 인한 401에러 차단
                                 .requestMatchers("/error").permitAll()
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                 )
                 // UsernamePasswordAuthenticationFilter 앞에 jwtAuthenticationFilter 필터를 추가
                 .addFilterBefore(

@@ -75,12 +75,12 @@ public class RecipeCommandController {
 	 * @return 레시피 추천 결과
 	 */
 	@PostMapping("/recommend")
-	public ResponseEntity<RecipeRecommendResponse> recommendRecipe(
+	public ResponseEntity<ApiResponse<RecipeRecommendResponse>> recommendRecipe(
 		@RequestBody RecipeRecommendRequest request,
 		@AuthenticationPrincipal UserDetails userDetails) {
 
 		// userDetails.getUsername()을 통해 로그인한 사용자 ID 전달
 		RecipeRecommendResponse response = recipeCommandService.getRecipeRecommendation(request, userDetails.getUsername());
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 }
