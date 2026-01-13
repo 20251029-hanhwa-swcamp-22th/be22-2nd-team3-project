@@ -99,8 +99,7 @@ public class RecipeCommandController {
 			@RequestParam Integer recommendRecipeNo,
 			@AuthenticationPrincipal UserDetails userDetails) {
 		DishDTO responseDish = dishCommandService.saveRecommendedToMyDish(recommendRecipeNo, userDetails.getUsername());
-		RecipeDTO responseRecipe = recipeCommandService.saveRecommendedToMyRecipe(recommendRecipeNo,
-				responseDish.getDishNo());
+		RecipeDTO responseRecipe = recipeCommandService.saveRecommendedToMyRecipe(recommendRecipeNo, responseDish.getDishNo());
 		AdoptRecommendedResponse adoptRecommendedResponse = new AdoptRecommendedResponse(responseRecipe, responseDish);
 		return ResponseEntity.ok(ApiResponse.success(adoptRecommendedResponse));
 	}

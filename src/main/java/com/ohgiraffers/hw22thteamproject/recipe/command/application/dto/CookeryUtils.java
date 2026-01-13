@@ -2,6 +2,9 @@ package com.ohgiraffers.hw22thteamproject.recipe.command.application.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 조리법에 관해 타입을 변환하는 클래스
@@ -54,6 +57,29 @@ public class CookeryUtils {
 			}
 		}
 		return list;
+	}
+
+	/**
+	 * 조리법을 일정한 형식의 문자열로 바꾸는 함수
+	 */
+	public String convertIngredientFormat(String input) {
+		// 1. 정규표현식 정의: 쉼표가 아닌 글자들 + (괄호 안의 내용)
+		// ([^,(]+) : 쉼표나 여는 괄호가 아닌 글자들 (재료명)
+		// \\(([^)]+)\\) : 괄호 안의 내용 (수량+단위)
+		Pattern pattern = Pattern.compile("([^,(]+)\\(([^)]+)\\)");
+		Matcher matcher = pattern.matcher(input);
+
+		StringJoiner joiner = new StringJoiner(", ", "{", "}");
+
+		while (matcher.find()) {
+			String name = matcher.group(1).trim();      // 재료명 (예: 김치)
+			String quantityUnit = matcher.group(2).trim(); // 수량단위 (예: 150.0g)
+
+			// 원하는 형식으로 조립: "재료명": "수량단위"
+			joiner.add(String.format("\"%s\": \"%s\"", name, quantityUnit));
+		}
+
+		return joiner.toString();
 	}
 
 }

@@ -13,13 +13,13 @@ import lombok.Getter;
  */
 @Getter
 public class RecipeIngredient {
-	private String ingredientName;
-	private double quantity;
+	private String name;
+	private double amount;
 	private String unit;
 
 	@Override
 	public String toString() {
-		return "\"%s\": \"%f%s\"".formatted(ingredientName, quantity, unit);
+		return "\"%s\": \"%.1f%s\"".formatted(name, amount, unit);
 	}
 
 	/**
@@ -57,8 +57,8 @@ public class RecipeIngredient {
 
 		while (matcher.find()) {
 			RecipeIngredient dto = new RecipeIngredient();
-			dto.ingredientName = matcher.group(1);           // 재료명
-			dto.quantity = Double.parseDouble(matcher.group(2)); // 수량 (문자열 -> double)
+			dto.name = matcher.group(1);           // 재료명
+			dto.amount = Double.parseDouble(matcher.group(2)); // 수량 (문자열 -> double)
 			dto.unit = matcher.group(3);                     // 단위
 
 			ingredients.add(dto);
