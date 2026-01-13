@@ -44,14 +44,13 @@ public class RecipeCommandController {
 	 * 레시피 수정
 	 * PUT /api/v1/recipes/{dishNo}
 	 */
-	@PutMapping("/{dishNo}")
+	@PutMapping("/update")
 	public ResponseEntity<ApiResponse<Void>> updateRecipe(
-		@PathVariable Integer dishNo,
 		@RequestBody @Valid RecipeUpdateRequest request,
 		@AuthenticationPrincipal UserDetails userDetails) { // 수정 시에도 본인 확인이 필요할 수 있어 추가 권장
 
 		// 서비스 메서드에 username을 전달하여 본인 확인 로직 추가 가능 (현재는 기존 로직 유지하되 확장성 고려)
-		recipeCommandService.updateRecipe(dishNo, request);
+		recipeCommandService.updateRecipe(request);
 
 		return ResponseEntity.ok(ApiResponse.success(null));
 	}

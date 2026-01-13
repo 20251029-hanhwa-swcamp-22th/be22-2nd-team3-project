@@ -1,6 +1,9 @@
 package com.ohgiraffers.hw22thteamproject.recipe.command.application.service;
 
+import java.util.List;
+
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.CookeryUtils;
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.RecipeIngredient;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeRecommendRequest;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response.RecipeRecommendResponse;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.RecommendRecipe;
@@ -18,8 +21,7 @@ import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.Dish;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.DishCategory;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.Recipe;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.DishRepository;
-import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.DishCategoryDTO;
-import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.DishDTO;
+import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.RecipeDTO;
 import com.ohgiraffers.hw22thteamproject.recipe.query.mapper.DishCategoryMapper;
 import com.ohgiraffers.hw22thteamproject.recipe.query.mapper.DishMapper;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.User;
@@ -34,66 +36,48 @@ import lombok.RequiredArgsConstructor;
 public class RecipeCommandService {
 
 	private final DishRepository dishRepository;
-	private final DishCategoryMapper dishCategoryMapper;
-	private final DishMapper dishMapper;
 	private final UserMapper userMapper;
 	private final ModelMapper modelMapper;
 	private final RecipeRecommendService recipeRecommendService;
 	private final RecommendRecipeRepository recommendRecipeRepository;
-	private final UserRepository userRepository;
 	private final DishCategoryRepository dishCategoryRepository;
 	private final RecipeRepository recipeRepository;
 
 	@Transactional
 	public Integer registRecipe(RecipeCreateRequest request) { // username 파라미터 추가
 
-		// 1. 카테고리 조회
-		DishCategory dishCategory = dishCategoryRepository.findById(request.getDishCategoryEnum().ordinal()+1)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 음식 카테고리입니다."));
-
-		// 2. Dish 조회
+		// 1. Dish 조회
 		Dish dish = dishRepository.findByDishName(request.getDishName())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 음식입니다."));
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 음식입니다."));
 
-		// 3. Recipe 생성
+		// 2. Recipe 생성
 		Recipe savedRecipe = Recipe.builder()
-			.dishNo(dish)
-			.recipeCookery(CookeryUtils.listToString(request.getCookery()))
-			.build();
+				.dishNo(dish)
+				.recipeCookery(CookeryUtils.listToString(request.getCookery()))
+				.build();
 
 		Integer id = recipeRepository.save(savedRecipe).getId();
 		return id;
 	}
 
 	@Transactional
-	public void updateRecipe(Integer dishNo, RecipeUpdateRequest request) {
+	public RecipeDTO updateRecipe(RecipeUpdateRequest request) {
 
-		DishDTO dishDTO = dishMapper.selectDishById(dishNo)
+		//Recipe Entity
+		Recipe updatedRecipe = recipeRepository.findById(request.getRecipeNo())
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
 
-		DishCategoryDTO dishCategoryDTO = dishCategoryMapper.selectDishCategoryById(request.getDishCategoryNo())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
+		// 재료 수정
+		List<RecipeIngredient> ingredients = request.getIngredients();
+		if(ingredients != null)
+			updatedRecipe.setRecipeIngredient(RecipeIngredient.listToString(request.getIngredients()));
 
-		DishCategory dishCategoryEntity = modelMapper.map(dishCategoryDTO, DishCategory.class);
-		Dish dishEntity = modelMapper.map(dishDTO, Dish.class);
+		// 조리법 수정
+		List<String> cookery = request.getCookery();
+		if(cookery != null)
+			updatedRecipe.setRecipeCookery(CookeryUtils.listToString(request.getCookery()));
 
-		dishEntity.setDishName(request.getDishName());
-		dishEntity.setDishImgFileRoute(request.getDishImgFileRoute());
-		dishEntity.setDishCategoryNo(dishCategoryEntity);
-
-		dishEntity.getRecipes().clear();
-		if (request.getRecipes() != null) {
-			request.getRecipes().forEach(step -> {
-				Recipe recipe = Recipe.builder()
-					.dishNo(dishEntity)
-					.recipeIngredient(step.getRecipeIngredient())
-					.recipeCookery(step.getRecipeCookery())
-					.build();
-				dishEntity.getRecipes().add(recipe);
-			});
-		}
-
-		// update는 JPA 영속성 컨텍스트에 의해 트랜잭션 종료 시 자동 반영됨 (Dirty Checking)
+		return modelMapper.map(updatedRecipe, RecipeDTO.class);
 	}
 
 	@Transactional
