@@ -2,6 +2,8 @@ package com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.respons
 
 import java.util.List;
 
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.DishCategoryEnum;
+
 import lombok.*;
 
 @Getter
@@ -10,16 +12,12 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class RecipeRecommendResponse {
-  private DishCategory dishCategory;          // 요리 카테고리
+  private DishCategoryEnum dishCategoryEnum;          // 요리 카테고리
   private String dishName;                    // 추천 요리 이름
   private List<IngredientDetail> ingredients; // 필요한 재료 정보
   private List<Substitution> substitutions;   // 대체 가능 재료
   private List<String> cookery;               // 조리법 (단계별)
   private List<String> tips;                  // 조리 팁
-
-  public enum DishCategory {
-    KOREAN, CHINESE, JAPANESE, WESTERN, SNACK, SALAD, FUSION, ETC
-  }
 
   @Getter
   @Setter
