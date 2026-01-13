@@ -8,7 +8,11 @@ import java.util.Optional;
 public interface DishRepository {
 
 	Dish save(Dish dish);
+
 	Optional<Dish> findById(Integer id);
+
+	Optional<Dish> findByDishName(String dishName);
+
 	void deleteById(Integer id);
 
 }

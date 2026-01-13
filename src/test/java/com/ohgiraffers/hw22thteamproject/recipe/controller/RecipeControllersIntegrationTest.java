@@ -38,244 +38,273 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 class RecipeControllersIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    @MockitoBean
-    private RecipeCommandService recipeCommandService;
+        @MockitoBean
+        private RecipeCommandService recipeCommandService;
 
-    @MockitoBean
-    private RecipeQueryService recipeQueryService;
+        @MockitoBean
+        private RecipeQueryService recipeQueryService;
 
-    @Test
-    @DisplayName("레시피 등록 테스트")
-    @WithMockUser(username = "gusgh075", password = "hidden")
-    void registRecipeTest() throws Exception {
-        // given
-        RecipeCreateRequest request = new RecipeCreateRequest();
-        request.setDishName("Test Dish");
-        request.setDishImgFileRoute("/images/test.jpg");
-        request.setDishCategoryNo(1);
-        request.setUserId("gusgh075");
+        @Test
+        @DisplayName("레시피 등록 테스트")
+        @WithMockUser(username = "gusgh075", password = "hidden")
+        void registRecipeTest() throws Exception {
+                // given
+                RecipeCreateRequest request = new RecipeCreateRequest();
+                request.setDishName("Test Dish");
+                request.setDishImgFileRoute("/images/test.jpg");
+                request.setDishCategoryNo(1);
 
-        RecipeCreateRequest.RecipeStepRequest step = new RecipeCreateRequest.RecipeStepRequest();
-        step.setRecipeIngredient("Test Ingredient");
-        step.setRecipeCookery("Test Cookery");
-        request.setRecipes(List.of(step));
+                RecipeCreateRequest.RecipeStepRequest step = new RecipeCreateRequest.RecipeStepRequest();
+                step.setRecipeIngredient("Test Ingredient");
+                step.setRecipeCookery("Test Cookery");
+                request.setRecipes(List.of(step));
 
-        given(recipeCommandService.registRecipe(any(RecipeCreateRequest.class), eq("gusgh075")))
-                .willReturn(1);
+                given(recipeCommandService.registRecipe(any(RecipeCreateRequest.class), eq("gusgh075")))
+                                .willReturn(1);
 
-        // when & then
-        mockMvc.perform(post("/api/v1/recipes")
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data").value(1));
-    }
+                // when & then
+                mockMvc.perform(post("/api/v1/recipes")
+                                .with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andDo(print())
+                                .andExpect(status().isCreated())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.data").value(1));
+        }
 
-    @Test
-    @DisplayName("레시피 수정 테스트")
-    @WithMockUser(username = "gusgh075", password = "hidden")
-    void updateRecipeTest() throws Exception {
-        // given
-        int dishNo = 1;
-        RecipeUpdateRequest request = new RecipeUpdateRequest();
-        request.setDishName("Updated Dish");
-        request.setDishImgFileRoute("/images/updated.jpg");
-        request.setDishCategoryNo(2);
+        @Test
+        @DisplayName("이미 존재하는 레시피(요리)에 추가 등록 테스트")
+        @WithMockUser(username = "gusgh075", password = "hidden")
+        void registRecipeWithExistingDishTest() throws Exception {
+                // given
+                RecipeCreateRequest request = new RecipeCreateRequest();
+                request.setDishName("Existing Dish"); // 이미 존재한다고 가정
+                request.setDishImgFileRoute("/images/existing.jpg");
+                request.setDishCategoryNo(1);
 
-        RecipeUpdateRequest.RecipeStepRequest step = new RecipeUpdateRequest.RecipeStepRequest();
-        step.setRecipeIngredient("Updated Ingredient");
-        step.setRecipeCookery("Updated Cookery");
-        request.setRecipes(List.of(step));
+                RecipeCreateRequest.RecipeStepRequest step = new RecipeCreateRequest.RecipeStepRequest();
+                step.setRecipeIngredient("New Ingredient");
+                step.setRecipeCookery("New Cookery Step");
+                request.setRecipes(List.of(step));
 
-        // when & then
-        mockMvc.perform(put("/api/v1/recipes/{dishNo}", dishNo)
-                .with(csrf())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true));
-    }
+                // CommandService Mocking: 이미 존재하는 Dish ID(100)를 반환한다고 가정
+                given(recipeCommandService.registRecipe(any(RecipeCreateRequest.class), eq("gusgh075")))
+                                .willReturn(100);
 
-    @Test
-    @DisplayName("레시피 삭제 테스트")
-    @WithMockUser(username = "gusgh075", password = "hidden")
-    void deleteRecipeTest() throws Exception {
-        // given
-        int dishNo = 1;
+                // when & then
+                mockMvc.perform(post("/api/v1/recipes")
+                                .with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andDo(print())
+                                .andExpect(status().isCreated())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.data").value(100)); // 기존 Dish ID 반환 확인
+        }
 
-        // when & then
-        mockMvc.perform(delete("/api/v1/recipes/{dishNo}", dishNo)
-                .with(csrf()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true));
-    }
+        @Test
+        @DisplayName("레시피 수정 테스트")
+        @WithMockUser(username = "gusgh075", password = "hidden")
+        void updateRecipeTest() throws Exception {
+                // given
+                int dishNo = 1;
+                RecipeUpdateRequest request = new RecipeUpdateRequest();
+                request.setDishName("Updated Dish");
+                request.setDishImgFileRoute("/images/updated.jpg");
+                request.setDishCategoryNo(2);
 
-    @Test
-    @DisplayName("전체 요리 카테고리 목록 조회 테스트")
-    @WithMockUser(username = "gusgh075", password = "hidden")
-    void getAllCategoriesTest() throws Exception {
-        // given
-        DishCategoryDTO category = new DishCategoryDTO();
-        category.setDishCategoryNo(1);
-        category.setDishCategoryName("Korean");
+                RecipeUpdateRequest.RecipeStepRequest step = new RecipeUpdateRequest.RecipeStepRequest();
+                step.setRecipeIngredient("Updated Ingredient");
+                step.setRecipeCookery("Updated Cookery");
+                request.setRecipes(List.of(step));
 
-        given(recipeQueryService.findAllCategories()).willReturn(List.of(category));
+                // when & then
+                mockMvc.perform(put("/api/v1/recipes/{dishNo}", dishNo)
+                                .with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andDo(print())
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(true));
+        }
 
-        // when & then
-        mockMvc.perform(get("/api/v1/recipes/categories")
-                .with(csrf()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data[0].dishCategoryName").value("Korean"));
-    }
+        @Test
+        @DisplayName("레시피 삭제 테스트")
+        @WithMockUser(username = "gusgh075", password = "hidden")
+        void deleteRecipeTest() throws Exception {
+                // given
+                int dishNo = 1;
 
-    @Test
-    @DisplayName("내 레시피 조회 테스트")
-    @WithMockUser(username = "gusgh075", password = "hidden")
-    void getMyDishesTest() throws Exception {
-        // given
-        DishDTO dish = new DishDTO();
-        dish.setDishNo(1);
-        dish.setDishName("My Dish");
+                // when & then
+                mockMvc.perform(delete("/api/v1/recipes/{dishNo}", dishNo)
+                                .with(csrf()))
+                                .andDo(print())
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(true));
+        }
 
-        given(recipeQueryService.findDishesByUsername("gusgh075")).willReturn(List.of(dish));
+        @Test
+        @DisplayName("전체 요리 카테고리 목록 조회 테스트")
+        @WithMockUser(username = "gusgh075", password = "hidden")
+        void getAllCategoriesTest() throws Exception {
+                // given
+                DishCategoryDTO category = new DishCategoryDTO();
+                category.setDishCategoryNo(1);
+                category.setDishCategoryName("Korean");
 
-        // when & then
-        mockMvc.perform(get("/api/v1/recipes/my")
-                .with(csrf()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data[0].dishName").value("My Dish"));
-    }
+                given(recipeQueryService.findAllCategories()).willReturn(List.of(category));
 
-    @Test
-    @DisplayName("특정 사용자 레시피 조회 테스트")
-    @WithMockUser(username = "gusgh075", password = "hidden")
-    void getDishesByUserTest() throws Exception {
-        // given
-        int userNo = 1;
-        DishDTO dish = new DishDTO();
-        dish.setDishNo(1);
-        dish.setDishName("User Dish");
+                // when & then
+                mockMvc.perform(get("/api/v1/recipes/categories")
+                                .with(csrf()))
+                                .andDo(print())
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.data[0].dishCategoryName").value("Korean"));
+        }
 
-        given(recipeQueryService.findDishesByUserNo(userNo)).willReturn(List.of(dish));
+        @Test
+        @DisplayName("내 레시피 조회 테스트")
+        @WithMockUser(username = "gusgh075", password = "hidden")
+        void getMyDishesTest() throws Exception {
+                // given
+                DishDTO dish = new DishDTO();
+                dish.setDishNo(1);
+                dish.setDishName("My Dish");
 
-        // when & then
-        mockMvc.perform(get("/api/v1/recipes/users/{userNo}", userNo)
-                .with(csrf()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data[0].dishName").value("User Dish"));
-    }
+                given(recipeQueryService.findDishesByUsername("gusgh075")).willReturn(List.of(dish));
 
-    @Test
-    @DisplayName("레시피 상세 조회 테스트")
-    @WithMockUser(username = "gusgh075", password = "hidden")
-    void getRecipeDetailTest() throws Exception {
-        // given
-        int dishNo = 1;
+                // when & then
+                mockMvc.perform(get("/api/v1/recipes/my")
+                                .with(csrf()))
+                                .andDo(print())
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.data[0].dishName").value("My Dish"));
+        }
 
-        DishDTO dish = new DishDTO();
-        dish.setDishNo(dishNo);
-        dish.setDishName("Detail Dish");
+        @Test
+        @DisplayName("특정 사용자 레시피 조회 테스트")
+        @WithMockUser(username = "gusgh075", password = "hidden")
+        void getDishesByUserTest() throws Exception {
+                // given
+                int userNo = 1;
+                DishDTO dish = new DishDTO();
+                dish.setDishNo(1);
+                dish.setDishName("User Dish");
 
-        RecipeDTO recipe = new RecipeDTO();
-        recipe.setRecipeNo(1);
-        recipe.setRecipeCookery("Detail Cookery");
+                given(recipeQueryService.findDishesByUserNo(userNo)).willReturn(List.of(dish));
 
-        RecipeDetailResponse response = new RecipeDetailResponse(dish, List.of(recipe));
+                // when & then
+                mockMvc.perform(get("/api/v1/recipes/users/{userNo}", userNo)
+                                .with(csrf()))
+                                .andDo(print())
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.data[0].dishName").value("User Dish"));
+        }
 
-        given(recipeQueryService.getRecipeDetail(dishNo)).willReturn(response);
+        @Test
+        @DisplayName("레시피 상세 조회 테스트")
+        @WithMockUser(username = "gusgh075", password = "hidden")
+        void getRecipeDetailTest() throws Exception {
+                // given
+                int dishNo = 1;
 
-        // when & then
-        mockMvc.perform(get("/api/v1/recipes/{dishNo}", dishNo)
-                .with(csrf()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.dish.dishName").value("Detail Dish"))
-                .andExpect(jsonPath("$.data.recipes[0].recipeCookery").value("Detail Cookery"));
-    }
+                DishDTO dish = new DishDTO();
+                dish.setDishNo(dishNo);
+                dish.setDishName("Detail Dish");
 
-    @Test
-    @DisplayName("특정 사용자 레시피 상세 목록 조회 테스트")
-    @WithMockUser(username = "gusgh075", password = "hidden")
-    void getDishDetailsByUserTest() throws Exception {
-        // given
-        int userNo = 1;
+                RecipeDTO recipe = new RecipeDTO();
+                recipe.setRecipeNo(1);
+                recipe.setRecipeCookery("Detail Cookery");
 
-        DishDTO dish = new DishDTO();
-        dish.setDishNo(1);
-        dish.setDishName("User Dish Detail");
+                RecipeDetailResponse response = new RecipeDetailResponse(dish, List.of(recipe));
 
-        RecipeDTO recipe = new RecipeDTO();
-        recipe.setRecipeCookery("Detail Cookery Step");
+                given(recipeQueryService.getRecipeDetail(dishNo)).willReturn(response);
 
-        RecipeDetailResponse detail = new RecipeDetailResponse(dish, List.of(recipe));
+                // when & then
+                mockMvc.perform(get("/api/v1/recipes/{dishNo}", dishNo)
+                                .with(csrf()))
+                                .andDo(print())
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.data.dish.dishName").value("Detail Dish"))
+                                .andExpect(jsonPath("$.data.recipes[0].recipeCookery").value("Detail Cookery"));
+        }
 
-        given(recipeQueryService.findDetailsByUser(userNo)).willReturn(List.of(detail));
+        @Test
+        @DisplayName("특정 사용자 레시피 상세 목록 조회 테스트")
+        @WithMockUser(username = "gusgh075", password = "hidden")
+        void getDishDetailsByUserTest() throws Exception {
+                // given
+                int userNo = 1;
 
-        // when & then
-        mockMvc.perform(get("/api/v1/recipes/users/{userNo}/details", userNo)
-                .with(csrf()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data[0].dish.dishName").value("User Dish Detail"));
-    }
+                DishDTO dish = new DishDTO();
+                dish.setDishNo(1);
+                dish.setDishName("User Dish Detail");
 
-    @Test
-    @DisplayName("추천 레시피 목록 조회 테스트")
-    @WithMockUser(username = "gusgh075", password = "hidden")
-    void getRecommendRecipesByUserTest() throws Exception {
-        // given
-        int userNo = 1;
+                RecipeDTO recipe = new RecipeDTO();
+                recipe.setRecipeCookery("Detail Cookery Step");
 
-        RecommendRecipeDTO rcd = new RecommendRecipeDTO();
-        rcd.setId(1);
-        rcd.setRcdRecipeDishName("Recommended Dish");
+                RecipeDetailResponse detail = new RecipeDetailResponse(dish, List.of(recipe));
 
-        given(recipeQueryService.findRecommendRecipesByUser(userNo)).willReturn(List.of(rcd));
+                given(recipeQueryService.findDetailsByUser(userNo)).willReturn(List.of(detail));
 
-        // when & then
-        mockMvc.perform(get("/api/v1/recipes/recommends/users/{userNo}", userNo)
-                .with(csrf()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data[0].rcdRecipeDishName").value("Recommended Dish"));
-    }
+                // when & then
+                mockMvc.perform(get("/api/v1/recipes/users/{userNo}/details", userNo)
+                                .with(csrf()))
+                                .andDo(print())
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.data[0].dish.dishName").value("User Dish Detail"));
+        }
 
-    @Test
-    @DisplayName("추천 레시피로 내 레시피 등록 테스트")
-    @WithMockUser(username = "gusgh075", password = "hidden")
-    void registRecipeFromRecommendTest() throws Exception {
-        // given
-        int rcdId = 1;
-        Integer newDishId = 100;
+        @Test
+        @DisplayName("추천 레시피 목록 조회 테스트")
+        @WithMockUser(username = "gusgh075", password = "hidden")
+        void getRecommendRecipesByUserTest() throws Exception {
+                // given
+                int userNo = 1;
 
-        given(recipeCommandService.registRecipeFromRecommend(eq(rcdId), eq("gusgh075")))
-                .willReturn(newDishId);
+                RecommendRecipeDTO rcd = new RecommendRecipeDTO();
+                rcd.setId(1);
+                rcd.setRcdRecipeDishName("Recommended Dish");
 
-        // when & then
-        mockMvc.perform(post("/api/v1/recipes/from-recommend/{rcdId}", rcdId)
-                .with(csrf()))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data").value(newDishId));
-    }
+                given(recipeQueryService.findRecommendRecipesByUser(userNo)).willReturn(List.of(rcd));
+
+                // when & then
+                mockMvc.perform(get("/api/v1/recipes/recommends/users/{userNo}", userNo)
+                                .with(csrf()))
+                                .andDo(print())
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.data[0].rcdRecipeDishName").value("Recommended Dish"));
+        }
+
+        @Test
+        @DisplayName("추천 레시피로 내 레시피 등록 테스트")
+        @WithMockUser(username = "gusgh075", password = "hidden")
+        void registRecipeFromRecommendTest() throws Exception {
+                // given
+                int rcdId = 1;
+                Integer newDishId = 100;
+
+                given(recipeCommandService.registRecipeFromRecommend(eq(rcdId), eq("gusgh075")))
+                                .willReturn(newDishId);
+
+                // when & then
+                mockMvc.perform(post("/api/v1/recipes/from-recommend/{rcdId}", rcdId)
+                                .with(csrf()))
+                                .andDo(print())
+                                .andExpect(status().isCreated())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.data").value(newDishId));
+        }
 }

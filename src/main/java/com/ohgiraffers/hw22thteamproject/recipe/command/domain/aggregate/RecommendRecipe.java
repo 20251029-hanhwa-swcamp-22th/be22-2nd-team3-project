@@ -13,7 +13,7 @@ import lombok.Setter;
 public class RecommendRecipe {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "recommend_recipe", nullable = false)
+  @Column(name = "rcd_recipe_no", nullable = false)
   private Integer id;
 
   @NotNull
@@ -35,8 +35,7 @@ public class RecommendRecipe {
   private String rcdRecipeIngredients;
 
   @Size(max = 1000)
-  @NotNull
-  @Column(name = "rcd_recipe_substitutions", nullable = false, length = 1000)
+  @Column(name = "rcd_recipe_substitutions", length = 1000)
   private String rcdRecipeSubstitutions;
 
   @Size(max = 2000)

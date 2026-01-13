@@ -35,8 +35,7 @@ public class Dish {
 	private String dishName;
 
 	@Size(max = 300)
-	@NotNull
-	@Column(name = "dish_img_file_route", nullable = false, length = 300)
+	@Column(name = "dish_img_file_route", length = 300)
 	private String dishImgFileRoute;
 
 	@NotNull

@@ -1,56 +1,107 @@
-### 1. AI 레시피 추천 요청 테스트
-POST localhost:8080/api/v1/recipes/recommend
-Authorization: Bearer {{auth_token}}
+### Global Variables
+@url = http://localhost:8080/api/v1/recipes
+@userNo = 1
+@dishNo = 6
+@rcdId = 1
+
+# =================================================================================================
+# Recipe Query Controller Tests
+# =================================================================================================
+
+### 0. 로그인
+POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "dishName": "김치찌개",
-  "ingredients": [
-    "김치",
-    "돼지고기 뒷다리살",
-    "두부",
-    "대파"
-  ],
-  "dislikedIngredients": [
-    "고수",
-    "당근"
-  ],
+  "userId": "testuser01",
+  "password": "testuserpwd@"
+}
+
+> {%
+    // 로그인 결과(응답) 중 accessToken을 auth_token 변수에 저장
+    client.global.set("token", response.body.data.accessToken);
+%}
+
+### 1. 전체 요리 카테고리 목록 조회
+GET {{url}}/categories
+Content-Type: application/json
+
+### 2. 내 레시피 조회 (Authentication required)
+GET {{url}}/my
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### 3. 특정 사용자 레시피 조회
+GET {{url}}/users/{{userNo}}
+Content-Type: application/json
+
+### 4. 레시피 상세 조회
+GET {{url}}/{{dishNo}}
+Content-Type: application/json
+
+### 5. 특정 사용자 레시피 상세 목록 조회 (New Feature)
+GET {{url}}/users/{{userNo}}/details
+Content-Type: application/json
+
+### 6. 추천 레시피 목록 조회 (New Feature)
+GET {{url}}/recommends/users/{{userNo}}
+Content-Type: application/json
+
+
+# =================================================================================================
+# Recipe Command Controller Tests
+# =================================================================================================
+
+### 7. 레시피 신규 등록
+POST {{url}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "dishNo": 6,
+  "ingredient": "김치, 돼지고기, 두부",
+  "recipeCookery": "1. 김치를 볶는다. 2. 물을 넣고 끓인다."
+}
+
+### 8. 레시피 수정
+PUT {{url}}/{{dishNo}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "dishName": "참치 김치찌개",
+  "dishImgFileRoute": "/images/tuna-kimchi-stew.jpg",
+  "dishCategoryNo": 1,
+  "recipes": [
+    {
+      "recipeIngredient": "김치, 참치캔, 대파",
+      "recipeCookery": "1. 김치를 볶는다. 2. 참치를 넣는다."
+    }
+  ]
+}
+
+### 9. 레시피 삭제
+DELETE {{url}}/{{dishNo}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### 10. 레시피 추천 요청
+POST {{url}}/recommend
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "dishName": "파스타",
+  "ingredients": ["파스타면", "토마토 소스", "양파"],
+  "dislikedIngredients": ["버섯"],
   "skillLevel": "BEGINNER",
-  "tools": [
-    "냄비",
-    "가스레인지",
-    "칼"
-  ],
-  "foodTypes": [
-    "한식",
-    "찌개"
-  ],
-  "preference": "매콤하고 칼칼하게 만들어주세요. 조미료는 최소한으로 쓰고 싶어요.",
+  "tools": ["냄비", "프라이팬"],
+  "foodTypes": ["WESTERN"],
+  "preference": "매콤한게 좋아요",
   "servings": 1
 }
 
-### 2. 재료 기반 자동 추천 테스트 (요리명 미지정)
-POST localhost:8080/api/v1/recipes/recommend
-Authorization: Bearer {{auth_token}}
+### 11. 추천 레시피로 내 레시피 등록 (New Feature)
+POST {{url}}/from-recommend/{{rcdId}}
 Content-Type: application/json
-
-{
-  "dishName": null,
-  "ingredients": [
-    "달걀",
-    "양파",
-    "스팸"
-  ],
-  "dislikedIngredients": [],
-  "skillLevel": "INTERMEDIATE",
-  "tools": [
-    "프라이팬",
-    "전자레인지"
-  ],
-  "foodTypes": [
-    "간편식",
-    "덮밥"
-  ],
-  "preference": "최대한 설거지가 적게 나오는 레시피로 알려줘.",
-  "servings": 2
-}
+Authorization: Bearer {{token}}

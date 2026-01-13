@@ -4,7 +4,7 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ohgiraffers.hw22thteamproject.recipe.query.mapper.RecommendRecipeMapper">
     <resultMap id="RecommendRecipeResultMap" type="com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.RecommendRecipeDTO">
-        <id property="id" column="recommend_recipe"/>
+        <id property="id" column="rcd_recipe_no"/>
         <result property="userNo" column="user_no"/>
         <result property="dishCategoryNo" column="dish_category_no"/>
         <result property="rcdRecipeDishName" column="rcd_recipe_dish_name"/>
@@ -16,7 +16,7 @@
 
     <select id="selectRecommendRecipesByUser" parameterType="int" resultMap="RecommendRecipeResultMap">
         SELECT
-            recommend_recipe,
+            rcd_recipe_no,
             user_no,
             dish_category_no,
             rcd_recipe_dish_name,
@@ -30,7 +30,7 @@
 
     <select id="selectRecommendRecipeById" parameterType="int" resultMap="RecommendRecipeResultMap">
         SELECT
-            recommend_recipe,
+            rcd_recipe_no,
             user_no,
             dish_category_no,
             rcd_recipe_dish_name,
@@ -39,6 +39,6 @@
             rcd_recipe_cookery,
             rcd_recipe_tips
         FROM rcd_recipe
-        WHERE recommend_recipe = #{id}
+        WHERE rcd_recipe_no = #{id}
     </select>
 </mapper>

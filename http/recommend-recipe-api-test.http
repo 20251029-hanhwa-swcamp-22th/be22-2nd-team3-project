@@ -1,0 +1,56 @@
+### 1. AI 레시피 추천 요청 테스트
+POST localhost:8080/api/v1/recipes/recommend
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "dishName": "김치찌개",
+  "ingredients": [
+    "김치",
+    "돼지고기 뒷다리살",
+    "두부",
+    "대파"
+  ],
+  "dislikedIngredients": [
+    "고수",
+    "당근"
+  ],
+  "skillLevel": "BEGINNER",
+  "tools": [
+    "냄비",
+    "가스레인지",
+    "칼"
+  ],
+  "foodTypes": [
+    "한식",
+    "찌개"
+  ],
+  "preference": "매콤하고 칼칼하게 만들어주세요. 조미료는 최소한으로 쓰고 싶어요.",
+  "servings": 1
+}
+
+### 2. 재료 기반 자동 추천 테스트 (요리명 미지정)
+POST localhost:8080/api/v1/recipes/recommend
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "dishName": null,
+  "ingredients": [
+    "달걀",
+    "양파",
+    "스팸"
+  ],
+  "dislikedIngredients": [],
+  "skillLevel": "INTERMEDIATE",
+  "tools": [
+    "프라이팬",
+    "전자레인지"
+  ],
+  "foodTypes": [
+    "간편식",
+    "덮밥"
+  ],
+  "preference": "최대한 설거지가 적게 나오는 레시피로 알려줘.",
+  "servings": 2
+}
