@@ -44,13 +44,13 @@ public class RecipeCommandService {
 
 		// 1. Dish 조회
 		Dish dish = dishRepository.findByDishName(request.getDishName())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 음식입니다."));
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 음식입니다."));
 
 		// 2. Recipe 생성
 		Recipe savedRecipe = Recipe.builder()
-			.dishNo(dish)
-			.recipeCookery(CookeryUtils.listToString(request.getCookery()))
-			.build();
+				.dishNo(dish)
+				.recipeCookery(CookeryUtils.listToString(request.getCookery()))
+				.build();
 
 		Integer id = recipeRepository.save(savedRecipe).getId();
 		return id;
@@ -59,9 +59,9 @@ public class RecipeCommandService {
 	@Transactional
 	public RecipeDTO updateRecipe(RecipeUpdateRequest request) {
 
-		//Recipe Entity
+		// Recipe Entity
 		Recipe updatedRecipe = recipeRepository.findById(request.getRecipeNo())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
 
 		// 재료 수정
 		List<RecipeIngredient> ingredients = request.getIngredients();
@@ -109,18 +109,17 @@ public class RecipeCommandService {
 	public RecipeDTO saveRecommendedToMyRecipe(Integer recommendRecipeNo, Integer dishNo) {
 		// 음식 조회
 		Dish dish = dishRepository.findById(dishNo)
-			.orElseThrow(() -> new IllegalArgumentException("음식이 조회되지 않습니다"));
+				.orElseThrow(() -> new IllegalArgumentException("음식이 조회되지 않습니다"));
 		// 추천레시피 조회
 		RecommendRecipe rcdRecipe = recommendRecipeRepository.findById(recommendRecipeNo)
-			.orElseThrow(() -> new IllegalArgumentException("추천레시피 데이터 없음"));
+				.orElseThrow(() -> new IllegalArgumentException("추천레시피 데이터 없음"));
 		return modelMapper.map(
-			recipeRepository.save(
-				Recipe.builder()
-					.dishNo(dish)
-					.recipeIngredient(rcdRecipe.getRcdRecipeIngredients())
-					.recipeCookery(rcdRecipe.getRcdRecipeCookery())
-					.build()
-			), RecipeDTO.class
-		);
+				recipeRepository.save(
+						Recipe.builder()
+								.dishNo(dish)
+								.recipeIngredient(rcdRecipe.getRcdRecipeIngredients())
+								.recipeCookery(rcdRecipe.getRcdRecipeCookery())
+								.build()),
+				RecipeDTO.class);
 	}
 }

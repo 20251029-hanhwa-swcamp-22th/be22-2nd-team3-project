@@ -34,18 +34,19 @@ public class RecipeCommandController {
 	/**
 	 * 레시피 신규 등록
 	 * POST /api/v1/recipes
+	 * 
 	 * @AuthenticationPrincipal을 사용하여 로그인한 사용자의 정보를 가져옵니다.
 	 */
 	@PostMapping
 	public ResponseEntity<ApiResponse<Integer>> registRecipe(
-		@RequestBody @Valid RecipeCreateRequest request,
-		@AuthenticationPrincipal UserDetails userDetails) {
+			@RequestBody @Valid RecipeCreateRequest request,
+			@AuthenticationPrincipal UserDetails userDetails) {
 
 		Integer recipeNo = recipeCommandService.registRecipe(request);
 
 		return ResponseEntity
-			.status(HttpStatus.CREATED)
-			.body(ApiResponse.success(recipeNo));
+				.status(HttpStatus.CREATED)
+				.body(ApiResponse.success(recipeNo));
 	}
 
 	/**
@@ -54,8 +55,8 @@ public class RecipeCommandController {
 	 */
 	@PutMapping("/update")
 	public ResponseEntity<ApiResponse<RecipeDTO>> updateRecipe(
-		@RequestBody @Valid RecipeUpdateRequest request,
-		@AuthenticationPrincipal UserDetails userDetails) { // 수정 시에도 본인 확인이 필요할 수 있어 추가 권장
+			@RequestBody @Valid RecipeUpdateRequest request,
+			@AuthenticationPrincipal UserDetails userDetails) { // 수정 시에도 본인 확인이 필요할 수 있어 추가 권장
 
 		// 서비스 메서드에 username을 전달하여 본인 확인 로직 추가 가능 (현재는 기존 로직 유지하되 확장성 고려)
 		RecipeDTO recipeDTO = recipeCommandService.updateRecipe(request);
@@ -77,33 +78,36 @@ public class RecipeCommandController {
 
 	/**
 	 * 레시피 추천
+	 * 
 	 * @param request 레시피 추천 객체
 	 * @return 레시피 추천 결과
 	 */
 	@PostMapping("/recommend")
 	public ResponseEntity<ApiResponse<RecommendRecipeResponse>> recommendRecipe(
-		@RequestBody RecipeRecommendRequest request,
-		@AuthenticationPrincipal UserDetails userDetails) {
+			@RequestBody RecipeRecommendRequest request,
+			@AuthenticationPrincipal UserDetails userDetails) {
 
 		// userDetails.getUsername()을 통해 로그인한 사용자 ID 전달
-		RecommendRecipeResponse response = recipeCommandService.getRecipeRecommendation(request, userDetails.getUsername());
+		RecommendRecipeResponse response = recipeCommandService.getRecipeRecommendation(request,
+				userDetails.getUsername());
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
 	/**
 	 * 추천 레시피를 유저 레시피로 등록
+	 * 
 	 * @param recommendRecipeNo 추천 레시피 번호
-	 * @param userDetails 유저 정보
+	 * @param userDetails       유저 정보
 	 * @return 저장된 recipe와 dish 정보
 	 */
 	@GetMapping("/recommend/save")
 	public ResponseEntity<ApiResponse<AdoptRecommendedResponse>> adoptRecommendedRecipe(
-		@RequestParam Integer recommendRecipeNo,
-		@AuthenticationPrincipal UserDetails userDetails
-	){
+			@RequestParam Integer recommendRecipeNo,
+			@AuthenticationPrincipal UserDetails userDetails) {
 		DishDTO responseDish = dishCommandService.saveRecommendedToMyDish(recommendRecipeNo, userDetails.getUsername());
-		RecipeDTO responseRecipe = recipeCommandService.saveRecommendedToMyRecipe(recommendRecipeNo,responseDish.getDishNo());
-		AdoptRecommendedResponse adoptRecommendedResponse= new AdoptRecommendedResponse(responseRecipe,responseDish);
+		RecipeDTO responseRecipe = recipeCommandService.saveRecommendedToMyRecipe(recommendRecipeNo,
+				responseDish.getDishNo());
+		AdoptRecommendedResponse adoptRecommendedResponse = new AdoptRecommendedResponse(responseRecipe, responseDish);
 		return ResponseEntity.ok(ApiResponse.success(adoptRecommendedResponse));
 	}
 }
