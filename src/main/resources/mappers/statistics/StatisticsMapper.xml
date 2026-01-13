@@ -19,7 +19,7 @@
         CONCAT(ingredient_stock_total_quantity, ingredient_stock_unit) AS quantity_unit
         FROM ingredient_stock
         WHERE user_no = #{userNo}
-        AND DATE_FORMAT(ingredient_stock_bought_at, '%Y-%m') = #{yearMonth}
+        AND DATE_FORMAT(ingredient_stock_bought_at, '%Y-%m') = #{monthlyPurchaseRequest.chosenMonth}
         ORDER BY ingredient_stock_bought_at DESC
     </select>
 

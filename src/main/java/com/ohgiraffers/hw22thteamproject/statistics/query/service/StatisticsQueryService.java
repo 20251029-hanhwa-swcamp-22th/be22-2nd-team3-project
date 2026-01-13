@@ -1,6 +1,7 @@
 package com.ohgiraffers.hw22thteamproject.statistics.query.service;
 
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.request.DisposalCostRequest;
+import com.ohgiraffers.hw22thteamproject.statistics.query.dto.request.MonthlyPurchaseRequest;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,12 +27,12 @@ public class StatisticsQueryService {
 	/**
 	 * 월별 지출
 	 * @param userNo
-	 * @param yearMonth
+	 * @param monthlyPurchaseRequest
 	 * @return
 	 */
-	public Map<String, Object> getMonthlyPurchaseDetails(int userNo, String yearMonth) {
+	public Map<String, Object> getMonthlyPurchaseDetails(int userNo, MonthlyPurchaseRequest monthlyPurchaseRequest) {
 
-		List<MonthlyPurchaseDTO> list = statisticsMapper.selectMonthlyPurchaseList(userNo, yearMonth);
+		List<MonthlyPurchaseDTO> list = statisticsMapper.selectMonthlyPurchaseList(userNo, monthlyPurchaseRequest);
 
 		int totalCost = list.stream()
 			.mapToInt(MonthlyPurchaseDTO::getCost)

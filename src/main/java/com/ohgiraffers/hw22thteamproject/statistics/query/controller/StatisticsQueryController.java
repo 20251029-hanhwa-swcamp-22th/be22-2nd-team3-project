@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.ohgiraffers.hw22thteamproject.common.dto.ApiResponse;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.request.DisposalCostRequest;
+import com.ohgiraffers.hw22thteamproject.statistics.query.dto.request.MonthlyPurchaseRequest;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.CategoryPurchaseDTO;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.DisposalCostResponse;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.IngredientPurchaseDTO;
@@ -26,9 +27,9 @@ public class StatisticsQueryController {
 	@GetMapping("/statistics/monthly/{userNo}")
 	public ResponseEntity<ApiResponse<Map<String, Object>>> getMonthlyPurchaseByUser(
 		@PathVariable int userNo,
-		@RequestParam String yearMonth
+		MonthlyPurchaseRequest monthlyPurchaseRequest
 	) {
-		Map<String, Object> response = statisticsQueryService.getMonthlyPurchaseDetails(userNo, yearMonth);
+		Map<String, Object> response = statisticsQueryService.getMonthlyPurchaseDetails(userNo, monthlyPurchaseRequest);
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 

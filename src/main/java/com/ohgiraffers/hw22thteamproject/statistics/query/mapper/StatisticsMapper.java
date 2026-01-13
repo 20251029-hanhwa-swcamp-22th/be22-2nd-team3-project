@@ -3,6 +3,7 @@ package com.ohgiraffers.hw22thteamproject.statistics.query.mapper;
 import java.util.List;
 
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.request.DisposalCostRequest;
+import com.ohgiraffers.hw22thteamproject.statistics.query.dto.request.MonthlyPurchaseRequest;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -11,7 +12,7 @@ import org.apache.ibatis.annotations.Param;
 public interface StatisticsMapper {
 	List<MonthlyPurchaseDTO> selectMonthlyPurchaseList(
 		@Param("userNo") int userNo,
-		@Param("yearMonth") String yearMonth
+		MonthlyPurchaseRequest monthlyPurchaseRequest
 	);
 
 	List<IngredientPurchaseDTO> selectIngredientPurchaseList(
