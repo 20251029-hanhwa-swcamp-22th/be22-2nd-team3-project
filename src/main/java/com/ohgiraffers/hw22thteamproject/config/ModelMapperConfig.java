@@ -2,11 +2,9 @@ package com.ohgiraffers.hw22thteamproject.config;
 
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response.RecommendRecipeResponse;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.Dish;
-import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.DishCategory;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.Recipe;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.RecommendRecipe;
 import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.RecipeDTO;
-import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.User;
 
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;

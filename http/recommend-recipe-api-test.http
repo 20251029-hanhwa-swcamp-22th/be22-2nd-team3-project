@@ -75,7 +75,6 @@ Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
 {
-  "dishName": null,
   "ingredients": [
     "달걀",
     "양파",
@@ -88,8 +87,8 @@ Content-Type: application/json
     "전자레인지"
   ],
   "foodTypes": [
-    "간편식",
-    "덮밥"
+    "SNACK",
+    "CHINESE"
   ],
   "preference": "최대한 설거지가 적게 나오는 레시피로 알려줘.",
   "servings": 2

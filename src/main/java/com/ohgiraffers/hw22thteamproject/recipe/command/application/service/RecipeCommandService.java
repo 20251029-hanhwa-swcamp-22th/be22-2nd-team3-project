@@ -15,7 +15,6 @@ import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.Dish;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.Recipe;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.RecommendRecipe;
-import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.DishCategoryRepository;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.DishRepository;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.RecipeRepository;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.RecommendRecipeRepository;
@@ -36,7 +35,6 @@ public class RecipeCommandService {
 	private final ModelMapper modelMapper;
 	private final RecipeRecommendService recipeRecommendService;
 	private final RecommendRecipeRepository recommendRecipeRepository;
-	private final DishCategoryRepository dishCategoryRepository;
 	private final RecipeRepository recipeRepository;
 
 	@Transactional
@@ -53,8 +51,7 @@ public class RecipeCommandService {
 				.recipeCookery(CookeryUtils.listToString(request.getCookery()))
 				.build();
 
-		Integer id = recipeRepository.save(savedRecipe).getId();
-		return id;
+		return recipeRepository.save(savedRecipe).getId();
 	}
 
 	@Transactional

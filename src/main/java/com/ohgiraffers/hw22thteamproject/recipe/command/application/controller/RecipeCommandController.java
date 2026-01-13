@@ -1,8 +1,5 @@
 package com.ohgiraffers.hw22thteamproject.recipe.command.application.controller;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.ohgiraffers.hw22thteamproject.common.dto.ApiResponse;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeCreateRequest;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeRecommendRequest;
@@ -34,13 +31,11 @@ public class RecipeCommandController {
 	/**
 	 * 레시피 신규 등록
 	 * POST /api/v1/recipes
-	 * 
-	 * @AuthenticationPrincipal을 사용하여 로그인한 사용자의 정보를 가져옵니다.
+	 *
 	 */
 	@PostMapping
 	public ResponseEntity<ApiResponse<Integer>> registRecipe(
-			@RequestBody @Valid RecipeCreateRequest request,
-			@AuthenticationPrincipal UserDetails userDetails) {
+			@RequestBody @Valid RecipeCreateRequest request) {
 
 		Integer recipeNo = recipeCommandService.registRecipe(request);
 
@@ -55,8 +50,7 @@ public class RecipeCommandController {
 	 */
 	@PutMapping("/update")
 	public ResponseEntity<ApiResponse<RecipeDTO>> updateRecipe(
-			@RequestBody @Valid RecipeUpdateRequest request,
-			@AuthenticationPrincipal UserDetails userDetails) { // 수정 시에도 본인 확인이 필요할 수 있어 추가 권장
+			@RequestBody @Valid RecipeUpdateRequest request) { // 수정 시에도 본인 확인이 필요할 수 있어 추가 권장
 
 		// 서비스 메서드에 username을 전달하여 본인 확인 로직 추가 가능 (현재는 기존 로직 유지하되 확장성 고려)
 		RecipeDTO recipeDTO = recipeCommandService.updateRecipe(request);

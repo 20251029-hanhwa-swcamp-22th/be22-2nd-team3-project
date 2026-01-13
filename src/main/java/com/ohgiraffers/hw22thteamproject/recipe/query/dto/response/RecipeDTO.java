@@ -1,6 +1,5 @@
 package com.ohgiraffers.hw22thteamproject.recipe.query.dto.response;
 
-import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.Dish;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.Recipe;
 
 import lombok.AllArgsConstructor;

@@ -1,6 +1,5 @@
 package com.ohgiraffers.hw22thteamproject.recipe.query.mapper;
 
-import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.Dish;
 import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.DishDTO;
 
 import org.apache.ibatis.annotations.Mapper;

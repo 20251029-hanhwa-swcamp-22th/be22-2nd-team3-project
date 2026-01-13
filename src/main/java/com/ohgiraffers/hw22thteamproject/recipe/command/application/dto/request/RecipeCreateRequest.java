@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
 
-import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.DishCategoryEnum;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.RecipeIngredient;
 
 @Getter

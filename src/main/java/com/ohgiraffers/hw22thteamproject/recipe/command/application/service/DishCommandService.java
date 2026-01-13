@@ -3,7 +3,6 @@ package com.ohgiraffers.hw22thteamproject.recipe.command.application.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.DishCreateRequest;
@@ -32,7 +31,6 @@ public class DishCommandService {
 	private final UserRepository userRepository;
 	private final DishCategoryRepository dishCategoryRepository;
 	private final RecipeRepository recipeRepository;
-	private final ModelMapper modelMapper;
 
 	@Transactional
 	public DishDTO saveRecommendedToMyDish(Integer recommendRecipeNo, String username) {

@@ -109,7 +109,7 @@ Authorization: Bearer {{accessToken}}
 
 ### 9. 레시피 삭제
 # DELETE /api/v1/recipes/delete/{recipeNo} 형태가 되어야 안정적 호출이 가능하나, 
-# 현재 Controller 매핑 @DeleteMapping("/delete") 와 @PathVariable 설정이 불일치할 수 있음.
+# 현재 Controller 매핑 DeleteMapping("/delete") 와 PathVariable 설정이 불일치할 수 있음.
 # 정상적인 PathVariable 호출을 가정하여 작성:
 DELETE http://localhost:8080/api/v1/recipes/delete?recipeNo=8
 Authorization: Bearer {{accessToken}}
