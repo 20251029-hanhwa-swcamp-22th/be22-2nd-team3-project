@@ -53,7 +53,7 @@ CREATE TABLE `dish`
     `dish_no`             INT AUTO_INCREMENT PRIMARY KEY,
     `user_no`             INT          NOT NULL,
     `dish_category_no`    INT          NOT NULL,
-    `dish_name`           VARCHAR(20)  NOT NULL UNIQUE,
+    `dish_name`           VARCHAR(20)  NOT NULL,
     `dish_img_file_route` VARCHAR(300) NULL,
     `dish_is_marked`      BOOLEAN      NOT NULL DEFAULT FALSE,
     `created_at`          DATETIME     NOT NULL DEFAULT current_timestamp(),

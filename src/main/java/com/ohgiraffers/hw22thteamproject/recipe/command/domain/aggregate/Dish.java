@@ -3,6 +3,7 @@ package com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -35,8 +36,8 @@ public class Dish {
 	private String dishName;
 
 	@Size(max = 300)
-	@NotNull
-	@Column(name = "dish_img_file_route", nullable = false, length = 300)
+	@Null
+	@Column(name = "dish_img_file_route", length = 300)
 	private String dishImgFileRoute;
 
 	@NotNull
