@@ -30,7 +30,7 @@ public class Dish {
 	@JoinColumn(name = "user_no", nullable = false)
 	private User userNo;
 
-	@Size(max = 20)
+	@Size(max = 100)
 	@NotNull
 	@Column(name = "dish_name", nullable = false, length = 20, unique = true) // unique 추가
 	private String dishName;

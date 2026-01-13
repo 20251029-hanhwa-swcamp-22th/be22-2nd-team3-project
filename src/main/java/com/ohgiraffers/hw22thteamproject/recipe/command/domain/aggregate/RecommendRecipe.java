@@ -24,7 +24,7 @@ public class RecommendRecipe {
   @Column(name = "dish_category_no", nullable = false)
   private Integer dishCategoryNo;
 
-  @Size(max = 20)
+  @Size(max = 100)
   @NotNull
   @Column(name = "rcd_recipe_dish_name", nullable = false, length = 20)
   private String rcdRecipeDishName;
