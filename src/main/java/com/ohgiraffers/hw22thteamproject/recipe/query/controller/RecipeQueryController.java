@@ -4,6 +4,7 @@ import com.ohgiraffers.hw22thteamproject.common.dto.ApiResponse;
 import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.DishCategoryDTO;
 import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.DishDTO;
 import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.RecipeDetailResponse;
+import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.RecommendRecipeDTO; // Added
 import com.ohgiraffers.hw22thteamproject.recipe.query.service.RecipeQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,7 @@ public class RecipeQueryController {
      */
     @GetMapping("/my")
     public ResponseEntity<ApiResponse<List<DishDTO>>> getMyDishes(
-        @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserDetails userDetails) {
 
         // UserPrincipal에서 PK(userNo)를 꺼내 서비스로 전달
         List<DishDTO> dishes = recipeQueryService.findDishesByUsername(userDetails.getUsername());
@@ -55,6 +56,26 @@ public class RecipeQueryController {
     public ResponseEntity<ApiResponse<List<DishDTO>>> getDishesByUser(@PathVariable int userNo) {
         List<DishDTO> dishes = recipeQueryService.findDishesByUserNo(userNo);
         return ResponseEntity.ok(ApiResponse.success(dishes));
+    }
+
+    /**
+     * 특정 사용자가 등록한 요리의 상세 정보(레시피 포함)를 모두 조회합니다.
+     * GET /api/v1/recipes/users/{userNo}/details
+     */
+    @GetMapping("/users/{userNo}/details")
+    public ResponseEntity<ApiResponse<List<RecipeDetailResponse>>> getDishDetailsByUser(@PathVariable int userNo) {
+        List<RecipeDetailResponse> response = recipeQueryService.findDetailsByUser(userNo);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    /**
+     * 특정 사용자의 추천 레시피(rcd_recipe) 목록을 조회합니다.
+     * GET /api/v1/recipes/recommends/users/{userNo}
+     */
+    @GetMapping("/recommends/users/{userNo}")
+    public ResponseEntity<ApiResponse<List<RecommendRecipeDTO>>> getRecommendRecipesByUser(@PathVariable int userNo) {
+        List<RecommendRecipeDTO> response = recipeQueryService.findRecommendRecipesByUser(userNo);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     /**
