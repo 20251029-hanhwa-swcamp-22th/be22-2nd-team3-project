@@ -5,10 +5,16 @@ import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.DishCat
 
 import java.util.Optional;
 
+import jakarta.validation.constraints.NotBlank;
+
 public interface DishRepository {
 
 	Dish save(Dish dish);
+
 	Optional<Dish> findById(Integer id);
+
 	void deleteById(Integer id);
+
+	Optional<Dish> findByDishName(String dishName);
 
 }

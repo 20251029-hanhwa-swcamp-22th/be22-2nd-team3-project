@@ -1,8 +1,11 @@
 package com.ohgiraffers.hw22thteamproject.recipe.command.application.service;
 
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.ListAndStringConverter;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.RecipeRecommendRequest;
 import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.response.RecipeRecommendResponse;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.RecommendRecipe;
+import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.DishCategoryRepository;
+import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.RecipeRepository;
 import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.RecommendRecipeRepository;
 import com.ohgiraffers.hw22thteamproject.recipe.command.infrastructure.service.RecipeRecommendService;
 import org.modelmapper.ModelMapper;
@@ -20,6 +23,7 @@ import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.DishDTO;
 import com.ohgiraffers.hw22thteamproject.recipe.query.mapper.DishCategoryMapper;
 import com.ohgiraffers.hw22thteamproject.recipe.query.mapper.DishMapper;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.User;
+import com.ohgiraffers.hw22thteamproject.user.command.domain.repository.UserRepository;
 import com.ohgiraffers.hw22thteamproject.user.query.dto.response.UserDTO;
 import com.ohgiraffers.hw22thteamproject.user.query.mapper.UserMapper;
 
@@ -36,48 +40,29 @@ public class RecipeCommandService {
 	private final ModelMapper modelMapper;
 	private final RecipeRecommendService recipeRecommendService;
 	private final RecommendRecipeRepository recommendRecipeRepository;
+	private final UserRepository userRepository;
+	private final DishCategoryRepository dishCategoryRepository;
+	private final RecipeRepository recipeRepository;
 
 	@Transactional
-	public Integer registRecipe(RecipeCreateRequest request, String username) { // username 파라미터 추가
+	public Integer registRecipe(RecipeCreateRequest request) { // username 파라미터 추가
 
-		// 1. UserDetails에서 가져온 username(ID)으로 실제 DB 유저 정보 조회
-		UserDTO userDTO = userMapper.selectUserByUserId(username);
+		// 1. 카테고리 조회
+		DishCategory dishCategory = dishCategoryRepository.findById(request.getDishCategoryEnum().ordinal()+1)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 음식 카테고리입니다."));
 
-		if (userDTO == null) {
-			throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
-		}
+		// 2. Dish 조회
+		Dish dish = dishRepository.findByDishName(request.getDishName())
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 음식입니다."));
 
-		// 2. 카테고리 조회
-		DishCategoryDTO dishCategoryDTO = dishCategoryMapper.selectDishCategoryById(request.getDishCategoryNo())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다."));
-
-		// 3. DTO -> Entity 변환
-		DishCategory dishCategoryEntity = modelMapper.map(dishCategoryDTO, DishCategory.class);
-		User user = modelMapper.map(userDTO, User.class); // 조회된 유저 정보를 Entity로 변환
-
-		// 4. Dish 생성 (연관관계 설정)
-		Dish newDish = Dish.builder()
-			.dishName(request.getDishName())
-			.dishImgFileRoute(request.getDishImgFileRoute())
-			.userNo(user) // DB에서 조회한 User Entity(PK 포함) 주입
-			.dishCategoryNo(dishCategoryEntity)
+		// 3. Recipe 생성
+		Recipe savedRecipe = Recipe.builder()
+			.dishNo(dish)
+			.recipeCookery(ListAndStringConverter.listToString(request.getCookery()))
 			.build();
 
-		// 5. Recipe 생성 및 Dish에 추가
-		if (request.getRecipes() != null) {
-			request.getRecipes().forEach(step -> {
-				Recipe recipe = Recipe.builder()
-					.dishNo(newDish)
-					.recipeIngredient(step.getRecipeIngredient())
-					.recipeCookery(step.getRecipeCookery())
-					.build();
-				newDish.getRecipes().add(recipe);
-			});
-		}
-
-		Dish savedDish = dishRepository.save(newDish);
-
-		return savedDish.getId();
+		Integer id = recipeRepository.save(savedRecipe).getId();
+		return id;
 	}
 
 	@Transactional

@@ -33,8 +33,7 @@ public class RecipeCommandController {
 		@RequestBody @Valid RecipeCreateRequest request,
 		@AuthenticationPrincipal UserDetails userDetails) {
 
-		// 인증된 사용자의 ID(username)를 서비스로 전달
-		Integer dishNo = recipeCommandService.registRecipe(request, userDetails.getUsername());
+		Integer dishNo = recipeCommandService.registRecipe(request);
 
 		return ResponseEntity
 			.status(HttpStatus.CREATED)

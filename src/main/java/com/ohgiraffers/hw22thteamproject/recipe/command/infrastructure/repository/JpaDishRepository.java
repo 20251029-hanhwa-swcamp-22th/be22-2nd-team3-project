@@ -6,4 +6,5 @@ import com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository.DishRe
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JpaDishRepository extends DishRepository, JpaRepository<Dish, Integer> {
+
 }
