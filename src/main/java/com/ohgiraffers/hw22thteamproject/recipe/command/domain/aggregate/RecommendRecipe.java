@@ -35,8 +35,7 @@ public class RecommendRecipe {
   private String rcdRecipeIngredients;
 
   @Size(max = 1000)
-  @NotNull
-  @Column(name = "rcd_recipe_substitutions", nullable = false, length = 1000)
+  @Column(name = "rcd_recipe_substitutions", length = 1000)
   private String rcdRecipeSubstitutions;
 
   @Size(max = 2000)
