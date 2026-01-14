@@ -11,6 +11,10 @@ import com.ohgiraffers.hw22thteamproject.recipe.command.application.service.Reci
 import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.DishDTO;
 import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.RecipeDTO;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +27,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 @RestController
 @RequestMapping("/api/v1/recipes")
 @RequiredArgsConstructor
+@Tag(name = "Recipe Command API", description = "레시피 등록, 수정, 삭제, 추천 관련 API")
 public class RecipeCommandController {
 
 	private final RecipeCommandService recipeCommandService;
@@ -33,6 +38,8 @@ public class RecipeCommandController {
 	 * POST /api/v1/recipes
 	 *
 	 */
+	@Operation(summary = "레시피 등록", description = "새로운 레시피를 등록합니다.")
+	@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "레시피 등록 성공")
 	@PostMapping
 	public ResponseEntity<ApiResponse<Integer>> registRecipe(
 			@RequestBody @Valid RecipeCreateRequest request) {
@@ -48,6 +55,8 @@ public class RecipeCommandController {
 	 * 레시피 수정
 	 * PUT /api/v1/recipes/{dishNo}
 	 */
+	@Operation(summary = "레시피 수정", description = "기존 레시피를 수정합니다.")
+	@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "레시피 수정 성공")
 	@PutMapping("/update")
 	public ResponseEntity<ApiResponse<RecipeDTO>> updateRecipe(
 			@RequestBody @Valid RecipeUpdateRequest request) { // 수정 시에도 본인 확인이 필요할 수 있어 추가 권장
@@ -62,8 +71,11 @@ public class RecipeCommandController {
 	 * 레시피 삭제
 	 * DELETE /api/v1/recipes/delete
 	 */
+	@Operation(summary = "레시피 삭제", description = "레시피를 삭제합니다.")
+	@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "레시피 삭제 성공")
 	@DeleteMapping("/delete")
-	public ResponseEntity<ApiResponse<Void>> deleteRecipe(@RequestParam Integer recipeNo) {
+	public ResponseEntity<ApiResponse<Void>> deleteRecipe(
+			@Parameter(description = "레시피 번호") @RequestParam Integer recipeNo) {
 
 		recipeCommandService.deleteRecipe(recipeNo);
 
@@ -76,6 +88,8 @@ public class RecipeCommandController {
 	 * @param request 레시피 추천 객체
 	 * @return 레시피 추천 결과
 	 */
+	@Operation(summary = "레시피 추천", description = "AI를 이용하여 레시피를 추천받습니다.")
+	@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "레시피 추천 성공")
 	@PostMapping("/recommend")
 	public ResponseEntity<ApiResponse<RecommendRecipeResponse>> recommendRecipe(
 			@RequestBody RecipeRecommendRequest request,
@@ -94,12 +108,15 @@ public class RecipeCommandController {
 	 * @param userDetails       유저 정보
 	 * @return 저장된 recipe와 dish 정보
 	 */
+	@Operation(summary = "추천 레시피 저장", description = "추천받은 레시피를 내 레시피로 저장합니다.")
+	@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "추천 레시피 저장 성공")
 	@GetMapping("/recommend/save")
 	public ResponseEntity<ApiResponse<AdoptRecommendedResponse>> adoptRecommendedRecipe(
-			@RequestParam Integer recommendRecipeNo,
+			@Parameter(description = "추천 레시피 번호") @RequestParam Integer recommendRecipeNo,
 			@AuthenticationPrincipal UserDetails userDetails) {
 		DishDTO responseDish = dishCommandService.saveRecommendedToMyDish(recommendRecipeNo, userDetails.getUsername());
-		RecipeDTO responseRecipe = recipeCommandService.saveRecommendedToMyRecipe(recommendRecipeNo, responseDish.getDishNo());
+		RecipeDTO responseRecipe = recipeCommandService.saveRecommendedToMyRecipe(recommendRecipeNo,
+				responseDish.getDishNo());
 		AdoptRecommendedResponse adoptRecommendedResponse = new AdoptRecommendedResponse(responseRecipe, responseDish);
 		return ResponseEntity.ok(ApiResponse.success(adoptRecommendedResponse));
 	}
