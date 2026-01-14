@@ -1,5 +1,7 @@
 package com.ohgiraffers.hw22thteamproject.user.command.application.service;
 
+import com.ohgiraffers.hw22thteamproject.exception.BusinessException;
+import com.ohgiraffers.hw22thteamproject.exception.ErrorCode;
 import com.ohgiraffers.hw22thteamproject.jwt.JwtTokenProvider;
 import com.ohgiraffers.hw22thteamproject.user.command.application.dto.request.UserCreateRequest;
 import com.ohgiraffers.hw22thteamproject.user.command.application.dto.request.UserLoginRequest;
@@ -8,6 +10,7 @@ import com.ohgiraffers.hw22thteamproject.user.command.application.dto.request.Us
 import com.ohgiraffers.hw22thteamproject.user.command.application.dto.response.TokenResponse;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.RefreshToken;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.User;
+import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.UserStatus;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.repository.UserAuthRepository;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.repository.UserRepository;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.service.UserDomainService;
@@ -55,6 +58,11 @@ public class UserCommandService {
         // 1. userId(user_id)로 조회 -> userId(user_id), password(암호화) 조회됨
         User user = this.userRepository.findByUserId(loginRequest.getUserId())
                 .orElseThrow(() -> new BadCredentialsException("아이디 또는 비밀번호가 일치하지 않습니다"));
+
+        // 2. 탈퇴한 회원 감지
+        if (user.getStatus() == UserStatus.INACTIVE) {
+            throw new BusinessException(ErrorCode.USER_INACTIVE);
+        }
 
         // 2. 비밀번호 매칭 확인
         if(!this.passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {

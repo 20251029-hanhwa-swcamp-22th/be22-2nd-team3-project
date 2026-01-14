@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
 
+    // 유저 관련 오류
+    USER_INACTIVE("1092","이미 탈퇴한 회원입니다", HttpStatus.BAD_REQUEST),
+
     // 상품 관련 오류
     USER_NOT_FOUND("10001", "ID가 일치하는 회원을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
