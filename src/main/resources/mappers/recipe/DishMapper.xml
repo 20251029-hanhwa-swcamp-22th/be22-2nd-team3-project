@@ -30,4 +30,19 @@
     <select id="selectDishesByUser" parameterType="int" resultMap="DishResultMap">
         SELECT * FROM dish WHERE user_no = #{userNo}
     </select>
+
+    <select id="selectDishesByUsername" parameterType="string" resultMap="DishResultMap">
+        SELECT
+        d.dish_no,
+        d.user_no,
+        d.dish_category_no,
+        d.dish_name,
+        d.dish_img_file_route,
+        d.dish_is_marked,
+        d.created_at,
+        d.updated_at
+        FROM dish d
+        JOIN user u ON d.user_no = u.user_no
+        WHERE u.user_id = #{username}
+    </select>
 </mapper>

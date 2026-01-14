@@ -1,0 +1,52 @@
+### 0. 회원 가입
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "userId": "hyeonho1",
+  "password": "hyeonho@",
+  "nickname": "hyeonhoTest",
+  "email": "hyeonho@gmail.xom",
+  "phoneNum": "01000000000",
+  "birthdate": "2026-01-13"
+}
+
+### 1. 로그인
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "userId": "hyeonho1",
+    "password": "hyeonho@"
+}
+
+> {%
+    client.global.set("accessToken", response.body.data.accessToken);
+    client.log("AccessToken: " + client.global.get("accessToken"));
+%}
+
+### 2. Dish 등록
+POST http://localhost:8080/api/v1/dishes
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "dishName": "김치찌개",
+    "dishCategoryEnum": "KOREAN"
+}
+
+### 3. Dish 수정 (DishNo는 DB 확인 후 입력 필요, 예시: 1)
+# DishNo 필드는 DTO에 추가된 필드입니다.
+PUT http://localhost:8080/api/v1/dishes/update
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+    "dishNo": 10,
+    "dishName": "참치 김치찌개",
+    "dishCategoryEnum": "KOREAN"
+}
+
+### 4. Dish 삭제 (DishNo는 DB 확인 후 입력 필요, 예시: 1)
+DELETE http://localhost:8080/api/v1/dishes/10
+Authorization: Bearer {{accessToken}}

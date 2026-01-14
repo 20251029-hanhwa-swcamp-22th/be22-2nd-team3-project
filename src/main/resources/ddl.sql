@@ -1,12 +1,4 @@
 -- 테이블 삭제 (참조 역순)
-DROP TABLE IF EXISTS `notification`;
-DROP TABLE IF EXISTS `disposal_histories`;
-DROP TABLE IF EXISTS `ingredient_stock`;
-DROP TABLE IF EXISTS `recipe`;
-DROP TABLE IF EXISTS `dish`;
-DROP TABLE IF EXISTS `notification_type`;
-DROP TABLE IF EXISTS `dish_category`;
-DROP TABLE IF EXISTS `ingredient`;
 DROP TABLE IF EXISTS `user`;
 
 -- 1. 회원 테이블
@@ -25,6 +17,7 @@ CREATE TABLE `user`
     `updated_at`            DATETIME     NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 );
 
+DROP TABLE IF EXISTS `dish_category`;
 -- 2. 요리 카테고리 테이블
 CREATE TABLE `dish_category`
 (
@@ -34,6 +27,7 @@ CREATE TABLE `dish_category`
     `updated_at`         DATETIME     NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 );
 
+DROP TABLE IF EXISTS `notification_type`;
 -- 3. 알림 타입 테이블
 CREATE TABLE `notification_type`
 (
@@ -41,6 +35,7 @@ CREATE TABLE `notification_type`
     `notification_type_name` VARCHAR(20) NOT NULL UNIQUE
 );
 
+DROP TABLE IF EXISTS `ingredient`;
 -- 4. 식자재 기초 정보 테이블
 CREATE TABLE `ingredient`
 (
@@ -50,21 +45,25 @@ CREATE TABLE `ingredient`
     `updated_at`      DATETIME    NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 );
 
+SET foreign_key_checks = 0;
+DROP TABLE IF EXISTS `dish`;
 -- 5. 요리(음식) 테이블
 CREATE TABLE `dish`
 (
     `dish_no`             INT AUTO_INCREMENT PRIMARY KEY,
     `user_no`             INT          NOT NULL,
     `dish_category_no`    INT          NOT NULL,
-    `dish_name`           VARCHAR(20)  NOT NULL UNIQUE,
-    `dish_img_file_route` VARCHAR(300) NOT NULL,
+    `dish_name`           VARCHAR(100) NOT NULL,
+    `dish_img_file_route` VARCHAR(300) NULL,
     `dish_is_marked`      BOOLEAN      NOT NULL DEFAULT FALSE,
     `created_at`          DATETIME     NOT NULL DEFAULT current_timestamp(),
     `updated_at`          DATETIME     NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
     FOREIGN KEY (`user_no`) REFERENCES `user` (`user_no`),
     FOREIGN KEY (`dish_category_no`) REFERENCES `dish_category` (`dish_category_no`)
 );
+SET foreign_key_checks = 1;
 
+DROP TABLE IF EXISTS `recipe`;
 -- 6. 레시피 테이블
 CREATE TABLE `recipe`
 (
@@ -77,6 +76,7 @@ CREATE TABLE `recipe`
     FOREIGN KEY (`dish_no`) REFERENCES `dish` (`dish_no`)
 );
 
+DROP TABLE IF EXISTS `ingredient_stock`;
 -- 7. 식자재 재고 테이블
 CREATE TABLE `ingredient_stock`
 (
@@ -96,6 +96,7 @@ CREATE TABLE `ingredient_stock`
     CHECK (`ingredient_stock_now_quantity` <= `ingredient_stock_total_quantity`)
 );
 
+DROP TABLE IF EXISTS `disposal_histories`;
 -- 8. 폐기 이력 테이블
 CREATE TABLE `disposal_histories`
 (
@@ -113,6 +114,7 @@ CREATE TABLE `disposal_histories`
     FOREIGN KEY (`user_no`) REFERENCES `user` (`user_no`)
 );
 
+DROP TABLE IF EXISTS `notification`;
 -- 9. 알림 테이블
 CREATE TABLE `notification`
 (
@@ -125,6 +127,21 @@ CREATE TABLE `notification`
     `updated_at`              DATETIME    NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
     FOREIGN KEY (`user_no`) REFERENCES `user` (`user_no`),
     FOREIGN KEY (`notification_type_no`) REFERENCES `notification_type` (`notification_type_no`)
+);
+
+DROP TABLE IF EXISTS `rcd_recipe`;
+CREATE TABLE `rcd_recipe`
+(
+    `rcd_recipe_no`            INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    `user_no`                  INT                            NOT NULL,
+    `dish_category_no`         INT                            NOT NULL,
+    `rcd_recipe_dish_name`     VARCHAR(100)                   NOT NULL,
+    `rcd_recipe_ingredients`   VARCHAR(1000)                  NOT NULL,
+    `rcd_recipe_substitutions` VARCHAR(1000)                  NULL,
+    `rcd_recipe_cookery`       VARCHAR(2000)                  NOT NULL,
+    `rcd_recipe_tips`          VARCHAR(2000)                  NOT NULL,
+    FOREIGN KEY (`user_no`) REFERENCES `user` (`user_no`),
+    FOREIGN KEY (`dish_category_no`) REFERENCES `dish_category` (`dish_category_no`)
 );
 
 ALTER TABLE `dish_category`

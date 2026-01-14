@@ -1,21 +1,19 @@
 package com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
 
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.DishCategoryEnum;
+import com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.RecipeIngredient;
+
 @Getter
 @Setter
 public class RecipeUpdateRequest {
-    private String dishName;
-    private String dishImgFileRoute;
-    private Integer dishCategoryNo;
-    private List<RecipeStepRequest> recipes;
 
-    @Getter
-    @Setter
-    public static class RecipeStepRequest {
-        private String recipeIngredient;
-        private String recipeCookery;
-    }
+    private Integer recipeNo;
+    private List<RecipeIngredient> ingredients;
+    private List<String> cookery;
+
 }

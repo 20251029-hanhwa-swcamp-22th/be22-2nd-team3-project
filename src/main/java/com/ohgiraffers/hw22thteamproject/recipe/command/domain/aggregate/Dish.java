@@ -3,6 +3,7 @@ package com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate;
 import com.ohgiraffers.hw22thteamproject.user.command.domain.aggregate.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -29,14 +30,14 @@ public class Dish {
 	@JoinColumn(name = "user_no", nullable = false)
 	private User userNo;
 
-	@Size(max = 20)
+	@Size(max = 100)
 	@NotNull
 	@Column(name = "dish_name", nullable = false, length = 20, unique = true) // unique 추가
 	private String dishName;
 
 	@Size(max = 300)
-	@NotNull
-	@Column(name = "dish_img_file_route", nullable = false, length = 300)
+	@Null
+	@Column(name = "dish_img_file_route", length = 300)
 	private String dishImgFileRoute;
 
 	@NotNull
@@ -55,6 +56,7 @@ public class Dish {
 
 	@NotNull
 	@Builder.Default
+	@ColumnDefault("current_timestamp()")
 	@Column(name = "created_at", nullable = false, updatable = false)
 	private LocalDateTime createdAt = LocalDateTime.now();
 

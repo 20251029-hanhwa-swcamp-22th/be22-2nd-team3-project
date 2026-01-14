@@ -1,6 +1,5 @@
 package com.ohgiraffers.hw22thteamproject.recipe.query.mapper;
 
-import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.Dish;
 import com.ohgiraffers.hw22thteamproject.recipe.query.dto.response.DishDTO;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -25,4 +24,6 @@ public interface DishMapper {
 	 * @return 해당 사용자의 요리 DTO 리스트
 	 */
 	List<DishDTO> selectDishesByUser(@Param("userNo") int userNo);
+
+	List<DishDTO> selectDishesByUsername(@Param("username") String username);
 }

@@ -1,13 +1,9 @@
 package com.ohgiraffers.hw22thteamproject.recipe.command.domain.repository;
 
-import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.DishCategory;
-
 import java.util.Optional;
 
+import com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate.DishCategory;
+
 public interface DishCategoryRepository {
-
-	DishCategory save(DishCategory dishCategory);
-
-	void deleteById(Integer id);
-
+	Optional<DishCategory> findById(Integer id);
 }

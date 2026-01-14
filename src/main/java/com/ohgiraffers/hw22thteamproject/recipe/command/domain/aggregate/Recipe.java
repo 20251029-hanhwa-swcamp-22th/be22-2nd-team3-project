@@ -1,13 +1,25 @@
 package com.ohgiraffers.hw22thteamproject.recipe.command.domain.aggregate;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.*;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.ColumnDefault;
 
-import java.time.Instant;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Builder
 @NoArgsConstructor
@@ -39,12 +51,13 @@ public class Recipe {
 
 	@NotNull
 	@ColumnDefault("current_timestamp()")
+	@Builder.Default
 	@Column(name = "created_at", nullable = false)
-	private Instant createdAt;
+	private LocalDateTime createdAt = LocalDateTime.now();
 
 	@NotNull
-	@ColumnDefault("current_timestamp()")
+	@Builder.Default
 	@Column(name = "updated_at", nullable = false)
-	private Instant updatedAt;
+	private LocalDateTime updatedAt = LocalDateTime.now();
 
 }
