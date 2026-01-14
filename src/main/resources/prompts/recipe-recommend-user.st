@@ -10,8 +10,8 @@
 - 인분 수: {servings}인분
 
 [응답 가이드]
-1. dishCategory: 요리의 카테고리 (예: 한식, 양식, 자취요리 등)를 작성해줘.
-2. dishName: 최종 결정된 요리 이름을 작성해줘.
+1. dishCategory: 요리의 카테고리 (KOREAN, CHINESE, JAPANESE, WESTERN, SNACK, SALAD, FUSION, ETC)를 작성해줘.
+2. dishName: 최종 결정된 요리 이름
 3. ingredients: 각 재료의 이름(name), 수량(amount - 숫자만), 단위(unit)를 상세히 나눠서 리스트로 줘.
 4. substitutions: 만약 특정 재료가 없을 때 대신 쓸 수 있는 재료 쌍을 알려줘.
 5. cookery: 단계별 조리법을 문자열 리스트로 상세히 작성해줘.
