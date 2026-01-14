@@ -41,3 +41,7 @@ Authorization: Bearer {{auth_token}}
   "disposalQuantity": 40,
   "disposalReason": "유통기한 경과"
 }
+
+### 폐기 이력 조회 (사용자별)
+GET http://localhost:8080/api/v1/disposals
+Authorization: Bearer {{auth_token}}
