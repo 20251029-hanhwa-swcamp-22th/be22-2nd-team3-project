@@ -1,10 +1,12 @@
 package com.ohgiraffers.hw22thteamproject.ingredientstock.command.domain.service;
 
+import com.ohgiraffers.hw22thteamproject.config.Constants;
 import com.ohgiraffers.hw22thteamproject.ingredientstock.command.application.dto.request.IngredientStockCreateRequest;
 import com.ohgiraffers.hw22thteamproject.ingredientstock.command.domain.aggregate.IngredientStock;
 import com.ohgiraffers.hw22thteamproject.ingredientstock.command.domain.aggregate.StockUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.scanner.Constant;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -26,7 +28,7 @@ public class IngredientStockDomainService {
         return ingredientStocks.stream()
                 .filter(stock -> {
                     long hoursUntilExpiry = ChronoUnit.HOURS.between(now.atStartOfDay(), stock.getIngredientStockExpiredAt().atStartOfDay());
-                    return hoursUntilExpiry <= 72 && hoursUntilExpiry >= 0;
+                    return hoursUntilExpiry <= Constants.INGREDIENT_STOCK_EXPIRYHOUR_THRESHOLD && hoursUntilExpiry >= 0;
                 })
                 .collect(Collectors.toList());
     }
@@ -42,7 +44,7 @@ public class IngredientStockDomainService {
                     long hoursUntilExpiry = ChronoUnit.HOURS.between(now.atStartOfDay(), stock.getIngredientStockExpiredAt().atStartOfDay());
 
                     // Only include stocks that are NOT expiring soon (> 72 hours)
-                    if (hoursUntilExpiry <= 72) {
+                    if (hoursUntilExpiry <= Constants.INGREDIENT_STOCK_EXPIRYHOUR_THRESHOLD) {
                         return false;
                     }
 
@@ -50,11 +52,11 @@ public class IngredientStockDomainService {
                     StockUnit unit = stock.getIngredientStockUnit();
                     long nowQuantity = stock.getIngredientStockNowQuantity();
 
-                    if ((unit == StockUnit.g || unit == StockUnit.ml) && nowQuantity < 50) {
+                    if ((unit == StockUnit.g || unit == StockUnit.ml) && nowQuantity < Constants.INGREDIENT_STOCK_EA_THRESHOLD) {
                         return true;
                     }
 
-                    if (unit == StockUnit.ea && nowQuantity < 5) {
+                    if (unit == StockUnit.ea && nowQuantity < Constants.INGREDIENT_STOCK_G_ML_THRESHOLD) {
                         return true;
                     }
 
