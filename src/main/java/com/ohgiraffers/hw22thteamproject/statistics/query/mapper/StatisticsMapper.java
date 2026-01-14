@@ -11,24 +11,24 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface StatisticsMapper {
 	List<MonthlyPurchaseDTO> selectMonthlyPurchaseList(
-		@Param("userNo") int userNo,
+		Long userNo,
 		MonthlyPurchaseRequest monthlyPurchaseRequest
 	);
 
 	List<IngredientPurchaseDTO> selectIngredientPurchaseList(
-		@Param("userNo") int userNo
+		Long userNo
 	);
 
 	List<CategoryPurchaseDTO> selectCategoryPurchaseList(
-		@Param("userNo") int userNo
+		Long userNo
 	);
 
 	List<DisposalCostDTO> selectDisposalCostList(
-		@Param("userNo") int userNo,
+		Long userNo,
 		DisposalCostRequest disposalCostRequest
 	);
 
 	List<MonthlyDisposalDTO> selectMonthlyDisposalList(
-		@Param("userNo") int userNo
+		Long userNo
 	);
 }

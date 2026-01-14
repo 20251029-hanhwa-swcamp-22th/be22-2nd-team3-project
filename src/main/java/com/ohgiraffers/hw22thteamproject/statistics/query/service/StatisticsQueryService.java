@@ -1,9 +1,12 @@
 package com.ohgiraffers.hw22thteamproject.statistics.query.service;
 
+import com.ohgiraffers.hw22thteamproject.jwt.JwtTokenProvider;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.request.DisposalCostRequest;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.request.MonthlyPurchaseRequest;
 import com.ohgiraffers.hw22thteamproject.statistics.query.dto.response.*;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,14 +26,18 @@ import com.ohgiraffers.hw22thteamproject.statistics.query.mapper.StatisticsMappe
 public class StatisticsQueryService {
 
 	private final StatisticsMapper statisticsMapper;
+	private final JwtTokenProvider jwtTokenProvider;
 
 	/**
 	 * 월별 지출
-	 * @param userNo
+	 * @param refreshToken
 	 * @param monthlyPurchaseRequest
 	 * @return
 	 */
-	public Map<String, Object> getMonthlyPurchaseDetails(int userNo, MonthlyPurchaseRequest monthlyPurchaseRequest) {
+	public Map<String, Object> getMonthlyPurchaseDetails(String refreshToken,
+		MonthlyPurchaseRequest monthlyPurchaseRequest) {
+
+		long userNo = Long.parseLong(jwtTokenProvider.getUserNoFromJWT(refreshToken));
 
 		List<MonthlyPurchaseDTO> list = statisticsMapper.selectMonthlyPurchaseList(userNo, monthlyPurchaseRequest);
 
@@ -48,10 +55,13 @@ public class StatisticsQueryService {
 
 	/**
 	 * 삭자재별 구매내역
-	 * @param userNo
+	 * @param refreshToken
 	 * @return
 	 */
-	public List<IngredientPurchaseDTO> getIngredientPurchase(int userNo){
+	public List<IngredientPurchaseDTO> getIngredientPurchase(String refreshToken) {
+
+		Long userNo = Long.parseLong(jwtTokenProvider.getUserNoFromJWT(refreshToken));
+
 		List<IngredientPurchaseDTO> list = statisticsMapper.selectIngredientPurchaseList(userNo);
 
 		if (list.isEmpty()) {
@@ -63,8 +73,8 @@ public class StatisticsQueryService {
 			.sum();
 
 		for (IngredientPurchaseDTO dto : list) {
-			if(total > 0){
-				double percentage = (double) dto.getTotalCost() / total * 100;
+			if (total > 0) {
+				double percentage = (double)dto.getTotalCost() / total * 100;
 				dto.setPercentage(Math.round(percentage * 100) / 100.0);
 			}
 		}
@@ -73,20 +83,25 @@ public class StatisticsQueryService {
 
 	/**
 	 * 카테고리별
-	 * @param userNo
+	 * @param refreshToken
 	 * @return
 	 */
-	public List<CategoryPurchaseDTO> getCategoryExpenseStats(int userNo) {
+	public List<CategoryPurchaseDTO> getCategoryExpenseStats(String refreshToken) {
+
+		Long userNo = Long.parseLong(jwtTokenProvider.getUserNoFromJWT(refreshToken));
+
 		return statisticsMapper.selectCategoryPurchaseList(userNo);
 	}
 
 	/**
 	 * 기간내폐기조회
-	 * @param userNo
+	 * @param refreshToken
 	 * @param disposalCostRequest
 	 * @return
 	 */
-	public DisposalCostResponse getDisposalCost(int userNo, DisposalCostRequest disposalCostRequest) {
+	public DisposalCostResponse getDisposalCost(String refreshToken, DisposalCostRequest disposalCostRequest) {
+
+		Long userNo = Long.parseLong(jwtTokenProvider.getUserNoFromJWT(refreshToken));
 
 		List<DisposalCostDTO> list = statisticsMapper.selectDisposalCostList(userNo, disposalCostRequest);
 
@@ -102,34 +117,38 @@ public class StatisticsQueryService {
 
 	/**
 	 * 월별 폐기
-	 * @param userNo
+	 * @param refreshToken
 	 * @return
 	 */
-	public List<MonthlyDisposalDTO> getMonthlyDisposalList(int userNo) {
-    List<MonthlyDisposalDTO> list = statisticsMapper.selectMonthlyDisposalList(userNo);
+	public List<MonthlyDisposalDTO> getMonthlyDisposalList(String refreshToken) {
 
-    List<MonthlyDisposalDTO> resultList = new ArrayList<>();
+		Long userNo = Long.parseLong(jwtTokenProvider.getUserNoFromJWT(refreshToken));
 
-    Map<String, MonthlyDisposalDTO> listMap = list.stream().collect(Collectors.toMap(MonthlyDisposalDTO::getStatMonth, dto -> dto));
+		List<MonthlyDisposalDTO> list = statisticsMapper.selectMonthlyDisposalList(userNo);
 
-    LocalDate currentMonth = LocalDate.now();
-    for (int i = 5; i >= 0; i--) {
+		List<MonthlyDisposalDTO> resultList = new ArrayList<>();
 
-      LocalDate lastMonth = currentMonth.minusMonths(i);
-      String key = lastMonth.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+		Map<String, MonthlyDisposalDTO> listMap = list.stream()
+			.collect(Collectors.toMap(MonthlyDisposalDTO::getStatMonth, dto -> dto));
 
-      if (listMap.containsKey(key)) {
-        resultList.add(listMap.get(key));
-      } else {
-        MonthlyDisposalDTO emptyList = new MonthlyDisposalDTO();
-        emptyList.setStatMonth(key);
-        emptyList.setTotalCost(0L);
-        emptyList.setDiscardCost(0L);
-        emptyList.setWasteRate(0.0);
-        resultList.add(emptyList);
-      }
-    }
-    return resultList;
-  }
+		LocalDate currentMonth = LocalDate.now();
+		for (int i = 5; i >= 0; i--) {
+
+			LocalDate lastMonth = currentMonth.minusMonths(i);
+			String key = lastMonth.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+
+			if (listMap.containsKey(key)) {
+				resultList.add(listMap.get(key));
+			} else {
+				MonthlyDisposalDTO emptyList = new MonthlyDisposalDTO();
+				emptyList.setStatMonth(key);
+				emptyList.setTotalCost(0L);
+				emptyList.setDiscardCost(0L);
+				emptyList.setWasteRate(0.0);
+				resultList.add(emptyList);
+			}
+		}
+		return resultList;
+	}
 
 }
