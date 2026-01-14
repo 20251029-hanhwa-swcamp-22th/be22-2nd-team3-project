@@ -74,7 +74,7 @@
         <result property="discardCost" column="discard_cost" />
         <result property="wasteRate" column="waste_rate" />
     </resultMap>
-    <select id="selectMonthlyDisposalList" parameterType="int" resultMap="MonthlyStatsResultMap">
+    <select id="selectMonthlyDisposalList" parameterType="Long" resultMap="MonthlyStatsResultMap">
         SELECT
         temp.month_date AS stat_month,
         SUM(temp.buy_amount) AS total_cost,

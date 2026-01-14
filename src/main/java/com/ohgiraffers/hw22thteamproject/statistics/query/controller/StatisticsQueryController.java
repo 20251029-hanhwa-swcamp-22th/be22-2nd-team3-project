@@ -24,47 +24,47 @@ public class StatisticsQueryController {
 
 	private final StatisticsQueryService statisticsQueryService;
 
-	@GetMapping("/statistics/monthly/{userNo}")
+	@GetMapping("/statistics/monthly")
 	public ResponseEntity<ApiResponse<Map<String, Object>>> getMonthlyPurchaseByUser(
-		@PathVariable int userNo,
+		@CookieValue(name = "refreshToken") String refreshToken,
 		MonthlyPurchaseRequest monthlyPurchaseRequest
 	) {
-		Map<String, Object> response = statisticsQueryService.getMonthlyPurchaseDetails(userNo, monthlyPurchaseRequest);
+		Map<String, Object> response = statisticsQueryService.getMonthlyPurchaseDetails(refreshToken, monthlyPurchaseRequest);
 		return ResponseEntity.ok(ApiResponse.success(response));
 	}
 
-	@GetMapping("/statistics/ingreient/{userNo}")
+	@GetMapping("/statistics/ingreient")
 	public ResponseEntity<ApiResponse<List<IngredientPurchaseDTO>>> getIngredientPurchaseByUser(
-		@PathVariable int userNo
+		@CookieValue(name = "refreshToken") String refreshToken
 	) {
-		List<IngredientPurchaseDTO> result = statisticsQueryService.getIngredientPurchase(userNo);
+		List<IngredientPurchaseDTO> result = statisticsQueryService.getIngredientPurchase(refreshToken);
 		return ResponseEntity.ok(ApiResponse.success(result));
 	}
 	
-	@GetMapping("/statistics/category/{userNo}")
+	@GetMapping("/statistics/category")
 	public ResponseEntity<ApiResponse<List<CategoryPurchaseDTO>>> getCategoryStats(
-		@PathVariable int userNo
+		@CookieValue(name = "refreshToken") String refreshToken
 	) {
-		List<CategoryPurchaseDTO> result = statisticsQueryService.getCategoryExpenseStats(userNo);
+		List<CategoryPurchaseDTO> result = statisticsQueryService.getCategoryExpenseStats(refreshToken);
 
 		return ResponseEntity.ok(ApiResponse.success(result));
 	}
 
-	@GetMapping("statistics/disposal/{userNo}")
+	@GetMapping("statistics/disposal")
 	public ResponseEntity<ApiResponse<DisposalCostResponse>> getDisposalCostByUser(
-		@PathVariable int userNo,
+		@CookieValue(name = "refreshToken") String refreshToken,
 		DisposalCostRequest disposalCostRequest
 	) {
-		DisposalCostResponse result = statisticsQueryService.getDisposalCost(userNo, disposalCostRequest);
+		DisposalCostResponse result = statisticsQueryService.getDisposalCost(refreshToken, disposalCostRequest);
 
 		return ResponseEntity.ok(ApiResponse.success(result));
 	}
 
-	@GetMapping("statistics/monthly-disposal/{userNo}")
+	@GetMapping("statistics/monthly-disposal")
 	public ResponseEntity<ApiResponse<List<MonthlyDisposalDTO>>> getMonthlyDisposalByUser(
-		@PathVariable int userNo
+		@CookieValue(name = "refreshToken") String refreshToken
 	) {
-		List<MonthlyDisposalDTO> result = statisticsQueryService.getMonthlyDisposalList(userNo);
+		List<MonthlyDisposalDTO> result = statisticsQueryService.getMonthlyDisposalList(refreshToken);
 
 		return ResponseEntity.ok(ApiResponse.success(result));
 	}
