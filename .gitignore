@@ -2,7 +2,7 @@ HELP.md
 NEWFEATURE.md
 application-dev.yml
 database_schema.sql
-
+.claude
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
