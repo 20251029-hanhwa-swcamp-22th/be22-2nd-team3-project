@@ -34,7 +34,7 @@ public class DishCommandController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
-    @org.springframework.web.bind.annotation.PutMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<ApiResponse<Void>> updateDish(
             @RequestBody com.ohgiraffers.hw22thteamproject.recipe.command.application.dto.request.DishUpdateRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
