@@ -1,0 +1,41 @@
+# 로그인 -> 식재료 알림 필터 -> 알림내용조회 -> 알림확인
+
+### 1. 로그인
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "userId": "testSeq01",
+  "password": "testSeq01pwd@"
+}
+
+> {%
+    client.global.set("auth_token", response.body.data.accessToken);
+%}
+
+### 2. 식재료 등록 (유통기한 임박 - 알림 생성용)
+POST http://localhost:8080/api/v1/ingredient-stock
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "ingredientStockName": "우유",
+  "ingredientStockCategory": "processed",
+  "ingredientStockBoughtAt": "2026-01-10",
+  "ingredientStockExpiredAt": "2026-01-17",
+  "ingredientStockTotalCost": 3500,
+  "ingredientStockTotalQuantity": 2,
+  "ingredientStockUnit": "ea"
+}
+
+### 3. 식재료 알림 필터 (유통기한 임박 및 재고 부족 알림 생성)
+POST http://localhost:8080/api/v1/ingredient-stock/notification
+Authorization: Bearer {{auth_token}}
+
+### 4. 알림내용조회
+GET http://localhost:8080/api/v1/notification
+Authorization: Bearer {{auth_token}}
+
+### 5. 알림확인 (읽음 처리)
+GET http://localhost:8080/api/v1/notification/1
+Authorization: Bearer {{auth_token}}

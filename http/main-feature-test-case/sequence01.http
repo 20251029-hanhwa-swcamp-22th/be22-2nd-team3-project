@@ -1,0 +1,60 @@
+# 회원가입 -> 로그인 -> 식재료등록 -> 식재료조회 -> 식재료업데이트 -> 식재료조회
+
+### 1. 회원가입
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "userId": "testSeq01",
+  "password": "testSeq01pwd@",
+  "nickname": "시퀀스테스트",
+  "email": "testseq01@gmail.com",
+  "phoneNum": "01098765432",
+  "birthdate": "1995-03-15"
+}
+
+### 2. 로그인
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "userId": "testSeq01",
+  "password": "testSeq01pwd@"
+}
+
+> {%
+    client.global.set("auth_token", response.body.data.accessToken);
+%}
+
+### 3. 식재료등록
+POST http://localhost:8080/api/v1/ingredient-stock
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "ingredientStockName": "당근",
+  "ingredientStockCategory": "produce",
+  "ingredientStockBoughtAt": "2026-01-14",
+  "ingredientStockExpiredAt": "2026-01-28",
+  "ingredientStockTotalCost": 3000,
+  "ingredientStockTotalQuantity": 5,
+  "ingredientStockUnit": "ea"
+}
+
+### 4. 식재료조회
+GET http://localhost:8080/api/v1/ingredient-stocks
+Authorization: Bearer {{auth_token}}
+
+### 5. 식재료업데이트
+PATCH http://localhost:8080/api/v1/ingredient-stock
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "ingredientStockNo": 60,
+  "ingredientStockUsedQuantity": 4
+}
+
+### 6. 식재료조회 (업데이트 확인)
+GET http://localhost:8080/api/v1/ingredient-stocks
+Authorization: Bearer {{auth_token}}
