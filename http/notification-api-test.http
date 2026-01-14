@@ -2,7 +2,12 @@
 POST http://localhost:8080/api/v1/notification
 Authorization: Bearer {{auth_token}}
 
+### 알림 리스트 조회
+GET http://localhost:8080/api/v1/notification
+Authorization: Bearer {{auth_token}}
 
-### 알림 확인 테스트
+### 알림 체크 테스트
 GET http://localhost:8080/api/v1/notification/10
 Authorization: Bearer {{auth_token}}
+
+
