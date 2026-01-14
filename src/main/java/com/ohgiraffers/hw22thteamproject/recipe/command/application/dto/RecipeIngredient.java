@@ -6,15 +6,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 /**
  * 레시피에 들어갈 개별 Ingredient를 담는 클래스
  */
 @Getter
+@Schema(description = "레시피 재료 정보")
 public class RecipeIngredient {
+	@Schema(description = "재료 이름", example = "당근")
 	private String name;
+	@Schema(description = "재료 수량", example = "1.5")
 	private double amount;
+	@Schema(description = "단위", example = "개")
 	private String unit;
 
 	@Override
@@ -32,12 +37,13 @@ public class RecipeIngredient {
 		}
 
 		return ingredients.stream()
-			.map(RecipeIngredient::toString)           // 1. 각 객체의 toString() 호출
-			.collect(Collectors.joining(", ", "{", "}")); // 2. 구분자(", "), 접두사("{"), 접미사("}") 적용
+				.map(RecipeIngredient::toString) // 1. 각 객체의 toString() 호출
+				.collect(Collectors.joining(", ", "{", "}")); // 2. 구분자(", "), 접두사("{"), 접미사("}") 적용
 	}
 
 	/**
 	 * 문자열을 다시 리스트로 변환
+	 * 
 	 * @param ingredientsString 변환할 문자열 (예: {"당근": "1.000000개", "양파": "0.500000개"})
 	 * @return RecipeIngredientDTO 리스트
 	 */
@@ -57,9 +63,9 @@ public class RecipeIngredient {
 
 		while (matcher.find()) {
 			RecipeIngredient dto = new RecipeIngredient();
-			dto.name = matcher.group(1);           // 재료명
+			dto.name = matcher.group(1); // 재료명
 			dto.amount = Double.parseDouble(matcher.group(2)); // 수량 (문자열 -> double)
-			dto.unit = matcher.group(3);                     // 단위
+			dto.unit = matcher.group(3); // 단위
 
 			ingredients.add(dto);
 		}
@@ -67,4 +73,3 @@ public class RecipeIngredient {
 		return ingredients;
 	}
 }
-
