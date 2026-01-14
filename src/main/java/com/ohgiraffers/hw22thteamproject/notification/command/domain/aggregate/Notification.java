@@ -54,4 +54,7 @@ public class Notification {
         return notification;
     }
 
+    public void setCheckTrue() {
+        this.isChecked = true;
+    }
 }

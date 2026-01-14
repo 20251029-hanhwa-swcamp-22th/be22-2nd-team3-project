@@ -1,6 +1,8 @@
 package com.ohgiraffers.hw22thteamproject.notification.command.application.service;
 
 import com.ohgiraffers.hw22thteamproject.jwt.JwtTokenProvider;
+import com.ohgiraffers.hw22thteamproject.notification.command.domain.aggregate.Notification;
+import com.ohgiraffers.hw22thteamproject.notification.command.domain.repository.NotificationDomainRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -12,17 +14,11 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class NotificationCommandService {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final NotificationDomainRepository notificationDomainRepository;
 
     @Transactional
-    public void setNotification(String refreshToken) {
-        // 1. 로그인 시점의 JWT Token에서 user_no, issuedAt 가져오기
-        this.jwtTokenProvider.validateToken(refreshToken);
-        long userNo = Long.parseLong(this.jwtTokenProvider.getUserNoFromJWT(refreshToken));
-        System.out.println("userNo = " + userNo);
-        Date login = this.jwtTokenProvider.getIssuedAtDateFromJWT(refreshToken);
-        System.out.println("login = " + login);
-
+    public void checkNotification(Long notificationNo) {
+        Notification notice = this.notificationDomainRepository.getNotificationByNotificationNo(notificationNo);
+        notice.setCheckTrue();
     }
-
 }
