@@ -1,0 +1,13 @@
+package com.ohgiraffers.hw22thteamproject.ingredientstock.command.application.dto.response;
+
+import com.ohgiraffers.hw22thteamproject.ingredientstock.command.domain.aggregate.DisposalHistory;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
+@Builder
+public class DisposalCreateResponse {
+    private final DisposalHistory disposalHistory;
+}
