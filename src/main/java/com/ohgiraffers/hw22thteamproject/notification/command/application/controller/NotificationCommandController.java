@@ -8,9 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,11 +17,12 @@ public class NotificationCommandController {
 
     private final NotificationCommandService notificationCommandService;
 
-    @PostMapping("notification")
-    public ResponseEntity<ApiResponse<Void>> saveNotification(
-            @CookieValue(name = "refreshToken") String refreshToken
+    /* 알람 읽음 처리 */
+    @GetMapping("/notification/{notification-no}")
+    public ResponseEntity<ApiResponse<Void>> checkNotification(
+            @PathVariable("notification-no") Long notificationNo
             ) {
-        this.notificationCommandService.setNotification(refreshToken);
+        this.notificationCommandService.checkNotification(notificationNo);
         return null;
     }
 
