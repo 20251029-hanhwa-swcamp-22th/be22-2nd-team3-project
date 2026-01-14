@@ -1,5 +1,6 @@
 package com.ohgiraffers.hw22thteamproject.ingredientstock.command.application.service;
 
+import com.ohgiraffers.hw22thteamproject.config.Constants;
 import com.ohgiraffers.hw22thteamproject.exception.BusinessException;
 import com.ohgiraffers.hw22thteamproject.exception.ErrorCode;
 import com.ohgiraffers.hw22thteamproject.ingredientstock.command.application.dto.request.IngredientStockCreateRequest;
@@ -126,11 +127,11 @@ public class IngredientStockCommandService {
 
         // Notification Type 가져오기 (1: 유통기한 임박, 2: 재고 부족)
         NotificationType expiryNotificationType = this.notificationTypeDomainRepository
-                .findByNotificationTypeNo(1)
+                .findByNotificationTypeNo(Constants.NOTICE_TYPE_EXPIRED_SOON)
                 .orElseThrow(() -> new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
 
         NotificationType lowStockNotificationType = this.notificationTypeDomainRepository
-                .findByNotificationTypeNo(2)
+                .findByNotificationTypeNo(Constants.NOTICE_TYPE_LOW_STOCK)
                 .orElseThrow(() -> new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
 
         // case A) notificationContent= ingredientStockName + "유통기한이" + ingredientStockExpiredAt - now() + "일 남음"
