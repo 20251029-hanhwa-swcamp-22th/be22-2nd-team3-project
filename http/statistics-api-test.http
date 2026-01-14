@@ -1,0 +1,23 @@
+### 월별 식자재 지출 분석
+GET http://localhost:8080/api/v1/statistics/monthly?yearMonth=2026-01
+Authorization: Bearer {{auth_token}}
+
+### 식자재별 비용 비중
+GET http://localhost:8080/api/v1/statistics/ingreient
+Authorization: Bearer {{auth_token}}
+
+### 폐기 식자재 비용 분석
+GET http://localhost:8080/api/v1/statistics/disposal
+Authorization: Bearer {{auth_token}}
+
+### 페기 식자재 비용 분석(기간별)
+GET http://localhost:8080/api/v1/statistics/disposal?startDate=2026-01&endDate=2026-03
+Authorization: Bearer {{auth_token}}
+
+### 카테고리별 지출 분석
+GET http://localhost:8080/api/v1/statistics/category
+Authorization: Bearer {{auth_token}}
+
+### 지출 대비 폐기율 산출
+GET http://localhost:8080/api/v1/statistics/monthly-disposal
+Authorization: Bearer {{auth_token}}

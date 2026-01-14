@@ -1,4 +1,8 @@
 HELP.md
+NEWFEATURE.md
+application-dev.yml
+database_schema.sql
+
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar

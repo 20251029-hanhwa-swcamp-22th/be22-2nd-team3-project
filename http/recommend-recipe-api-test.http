@@ -1,0 +1,95 @@
+### 0. 회원 가입
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "userId": "hyeonho1",
+  "password": "hyeonho@",
+  "nickname": "hyeonhoTest",
+  "email": "hyeonho@gmail.xom",
+  "phoneNum": "01000000000",
+  "birthdate": "2026-01-13"
+}
+
+### 1. 로그인
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "userId": "hyeonho1",
+  "password": "hyeonho@"
+}
+
+> {%
+    client.global.set("accessToken", response.body.data.accessToken);
+    client.log("AccessToken: " + client.global.get("accessToken"));
+%}
+
+### 2. AI 레시피 추천 요청 테스트
+POST localhost:8080/api/v1/recipes/recommend
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "dishName": "김치찌개",
+  "ingredients": [
+    "김치",
+    "돼지고기 뒷다리살",
+    "두부",
+    "대파"
+  ],
+  "dislikedIngredients": [
+    "고수",
+    "당근"
+  ],
+  "skillLevel": "BEGINNER",
+  "tools": [
+    "냄비",
+    "가스레인지",
+    "칼"
+  ],
+  "foodTypes": [
+    "KOREAN",
+    "JAPANESE"
+  ],
+  "preference": "매콤하고 칼칼하게 만들어주세요. 조미료는 최소한으로 쓰고 싶어요.",
+  "servings": 1
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+    // 현재 백엔드 응답에 recommendRecipeNo가 포함되지 않으므로, 
+    // DB(rcd_recipe 테이블)를 확인하여 생성된 ID를 아래 요청에 수동으로 입력해야 합니다.
+%}
+
+### 2-1. 추천 레시피 저장 (내 레시피로 등록)
+# recommendRecipeNo는 DB 사이드 확인 후 입력 필요 (예: 13)
+GET localhost:8080/api/v1/recipes/recommend/save?recommendRecipeNo=13
+Authorization: Bearer {{accessToken}}
+
+### 3. 재료 기반 자동 추천 테스트 (요리명 미지정)
+POST localhost:8080/api/v1/recipes/recommend
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "ingredients": [
+    "달걀",
+    "양파",
+    "스팸"
+  ],
+  "dislikedIngredients": [],
+  "skillLevel": "INTERMEDIATE",
+  "tools": [
+    "프라이팬",
+    "전자레인지"
+  ],
+  "foodTypes": [
+    "SNACK",
+    "CHINESE"
+  ],
+  "preference": "최대한 설거지가 적게 나오는 레시피로 알려줘.",
+  "servings": 2
+}
