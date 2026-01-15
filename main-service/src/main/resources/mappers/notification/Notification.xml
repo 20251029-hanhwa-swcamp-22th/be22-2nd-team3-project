@@ -5,7 +5,7 @@
 <mapper namespace="com.ohgiraffers.mainservice.notification.query.mapper.NotificationMapper">
 
     <resultMap id="NotificationResultMap"
-               type="com.ohgiraffers.mainservice.notification.query.dto.response.NotificationDTO">
+               type="com.ohgiraffers.recipeservice.notification.query.dto.response.NotificationDTO">
         <id property="notificationNo" column="notification_no"/>
         <result property="userNo" column="user_no"/>
         <result property="notificationTypeNo" column="notification_type_no"/>

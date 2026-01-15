@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ohgiraffers.mainservice.statistics.query.mapper.StatisticsMapper">
-    <resultMap id="MonthlyPurchaseMap" type="com.ohgiraffers.mainservice.statistics.query.dto.response.MonthlyPurchaseDTO">
+    <resultMap id="MonthlyPurchaseMap" type="com.ohgiraffers.recipeservice.statistics.query.dto.response.MonthlyPurchaseDTO">
         <result column="ingredient_stock_name" property="name"/>
         <result column="ingredient_stock_category" property="category"/>
         <result column="quantity_unit" property="quantity"/>
@@ -23,7 +23,7 @@
         ORDER BY ingredient_stock_bought_at DESC
     </select>
 
-    <resultMap id="IngredientPurchaseMap" type="com.ohgiraffers.mainservice.statistics.query.dto.response.IngredientPurchaseDTO">
+    <resultMap id="IngredientPurchaseMap" type="com.ohgiraffers.recipeservice.statistics.query.dto.response.IngredientPurchaseDTO">
         <result column="ingredient_stock_name" property="name"/>
         <result column="total_cost"            property="totalCost"/>
     </resultMap>
@@ -37,9 +37,9 @@
         ORDER BY total_cost DESC
     </select>
 
-    <resultMap id="CategoryPurchaseMap" type="com.ohgiraffers.mainservice.statistics.query.dto.response.CategoryPurchaseDTO">
+    <resultMap id="CategoryPurchaseMap" type="com.ohgiraffers.recipeservice.statistics.query.dto.response.CategoryPurchaseDTO">
         <result property="category" column="ingredient_stock_category"
-                javaType="com.ohgiraffers.mainservice.statistics.query.dto.response.IngredientCategory"/>
+                javaType="com.ohgiraffers.recipeservice.statistics.query.dto.response.IngredientCategory"/>
         <result property="totalCost" column="total_cost"/>
     </resultMap>
     <select id="selectCategoryPurchaseList" resultMap="CategoryPurchaseMap">
@@ -52,7 +52,7 @@
         ORDER BY total_cost DESC
     </select>
 
-    <resultMap id="DisposalCostMap" type="com.ohgiraffers.mainservice.statistics.query.dto.response.DisposalCostDTO">
+    <resultMap id="DisposalCostMap" type="com.ohgiraffers.recipeservice.statistics.query.dto.response.DisposalCostDTO">
         <result property="disposalCost" column="disposal_cost"/>
     </resultMap>
     <select id="selectDisposalCostList" resultMap="DisposalCostMap">
@@ -68,7 +68,7 @@
         </if>
     </select>
 
-    <resultMap id="MonthlyStatsResultMap" type="com.ohgiraffers.mainservice.statistics.query.dto.response.MonthlyDisposalDTO">
+    <resultMap id="MonthlyStatsResultMap" type="com.ohgiraffers.recipeservice.statistics.query.dto.response.MonthlyDisposalDTO">
         <result property="statMonth" column="stat_month" />
         <result property="totalCost" column="total_cost" />
         <result property="discardCost" column="discard_cost" />

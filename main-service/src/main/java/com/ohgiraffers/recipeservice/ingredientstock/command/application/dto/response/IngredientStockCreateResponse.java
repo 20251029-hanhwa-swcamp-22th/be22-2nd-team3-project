@@ -1,0 +1,14 @@
+package com.ohgiraffers.recipeservice.ingredientstock.command.application.dto.response;
+
+
+import com.ohgiraffers.recipeservice.ingredientstock.command.domain.aggregate.IngredientStock;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
+public class IngredientStockCreateResponse {
+
+    private final IngredientStock ingredientStock;
+
+}
