@@ -1,0 +1,101 @@
+server:
+  port: 8000  # Gateway 서버는 8000번 포트에서 요청 대기
+
+spring:
+  application:
+    name: gateway-server  # Eureka에 등록될 Gateway 이름
+  cloud:
+    gateway:
+      # Netty 기반의 비동기 웹 서버(WebFlux) 설정을 따름
+      server:
+        webflux:
+          routes:
+            # --- [Swagger UI Routes for each service] ---
+            - id: user-service-swagger
+              uri: lb://USER-SERVICE
+              predicates:
+                - Path=/user-service/v3/api-docs/**
+              filters:
+                - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+
+            - id: ingredient-stock-service-swagger
+              uri: lb://INGREDIENT-STOCK-SERVICE
+              predicates:
+                - Path=/ingredient-stock-service/v3/api-docs/**
+              filters:
+                - RewritePath=/ingredient-stock-service/(?<segment>.*), /$\{segment}
+
+            - id: recipe-service-swagger
+              uri: lb://RECIPE-SERVICE
+              predicates:
+                - Path=/recipe-service/v3/api-docs/**
+              filters:
+                - RewritePath=/recipe-service/(?<segment>.*), /$\{segment}
+
+            - id: notification-service-swagger
+              uri: lb://NOTIFICATION-SERVICE
+              predicates:
+                - Path=/notification-service/v3/api-docs/**
+              filters:
+                - RewritePath=/notification-service/(?<segment>.*), /$\{segment}
+
+            # --- [notification-service 라우팅 규칙] ---
+            - id: notification-service
+              uri: lb://NOTIFICATION-SERVICE
+              predicates:
+                - Path=/api/v1/notification-service/**
+              filters:
+                - RewritePath=/api/v1/notification-service/(?<segment>.*), /$\{segment}
+            # --- [user-service 라우팅 규칙] ---
+            - id: user-service
+              uri: lb://USER-SERVICE
+              predicates:
+                - Path=/api/v1/user-service/**
+              filters:
+                - RewritePath=/api/v1/user-service/(?<segment>.*), /$\{segment}
+                - name: CircuitBreaker # 회로차단기(두꺼비집) == MS의 문제가 있거나 응답이 지연될 경우 동작
+                  args:
+                    name: userServiceCB
+                    fallbackUri: forward:/fallback/user
+            # --- [ingredient-stock-service 라우팅 규칙] ---
+            - id: ingredient-stock-service
+              uri: lb://INGREDIENT-STOCK-SERVICE
+              predicates:
+                - Path=/api/v1/ingredient-stock-service/**
+              filters:
+                - RewritePath=/api/v1/ingredient-stock-service/(?<segment>.*), /$\{segment}
+
+            - id: recipe-service
+              uri: lb://RECIPE-SERVICE
+              predicates:
+                - Path=/api/v1/recipe-service/**
+              filters:
+                - RewritePath=/api/v1/recipe-service/(?<segment>.*), /$\{segment}
+
+# SpringDoc OpenAPI Configuration - Aggregates all microservice APIs
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    urls:
+      - name: User Service
+        url: /user-service/v3/api-docs
+      - name: Ingredient Stock Service
+        url: /ingredient-stock-service/v3/api-docs
+      - name: Recipe Service
+        url: /recipe-service/v3/api-docs
+      - name: Notification Service
+        url: /notification-service/v3/api-docs
+  api-docs:
+    enabled: true
+# Eureka Server(전화번호부) 설정
+eureka:
+  client:
+    register-with-eureka: true  # Gateway도 Eureka에 자신을 등록
+    fetch-registry: true        # 다른 서비스들의 주소 목록을 받아옴 (라우팅을 위해 필수).
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+# JWT 토큰 검증을 위한 비밀키 설정
+jwt:
+  secret: LH9QZL8upsPBfuDY+Dkb1kT9DZIIUSuA2u4O6Lfi3mkEfeWtETpVTcR/8SMZdJWn/xNTuCQBE6rBvDXgnVmscQ==

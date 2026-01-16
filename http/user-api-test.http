@@ -1,5 +1,5 @@
-### 회원 가입
-POST http://localhost:8080/api/v1/users
+### 회원가입
+POST http://localhost:8000/api/v1/user-service/users
 Content-Type: application/json
 
 {
@@ -12,40 +12,38 @@ Content-Type: application/json
 }
 
 ### 로그인
-POST http://localhost:8080/api/v1/auth/login
+POST http://localhost:8000/api/v1/user-service/auth/login
 Content-Type: application/json
 
 {
   "userId": "testuser01",
-  "password": "testuserpwd@"
+  "password": "password#"
 }
 
 > {%
-    // 로그인 결과(응답) 중 accessToken을 auth_token 변수에 저장
+    // 응답 결과에서 accessToken 값을 추출하여 auth_token 변수에 저장
     client.global.set("auth_token", response.body.data.accessToken);
+    client.global.set("refresh_token", response.body.data.refreshToken);
 %}
 
-### UserID를 사용한 회원 정보 조회
-GET http://localhost:8080/api/v1/users/testuser01
-Authorization: Bearer {{auth_token}}
+### 조회 {user_id}
+GET http://localhost:8000/api/v1/user-service/users/testuser01
 Accept: application/json
-
-### 로그인 후 본인정보 조회
-GET http://localhost:8080/api/v1/users/myinfo
 Authorization: Bearer {{auth_token}}
 
-
-### 로그아웃
-POST http://localhost:8080/api/v1/auth/logout
-Authorization: Bearer {{auth_token}}
+### 조회 {user_no}
+GET http://localhost:8000/api/v1/user-service/users/by-no/2
 Accept: application/json
+Authorization: Bearer {{auth_token}}
 
-> {%
-    client.global.clearAll();
-%}
+### 내정보(로그인유저) 조회
+GET http://localhost:8000/api/v1/user-service/users/myinfo
+Accept: application/json
+Authorization: Bearer {{auth_token}}
 
-### 회원정보 (email, phoneNum) 수정
-PATCH http://localhost:8080/api/v1/users
+### 회원정보 수정 (email, phoneNum)
+PATCH http://localhost:8000/api/v1/user-service/users
+Accept: application/json
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
@@ -54,8 +52,9 @@ Content-Type: application/json
   "phoneNum": "010-9999-1192"
 }
 
-### 회원정보 (password) 수정
-PATCH http://localhost:8080/api/v1/users/password
+### 회원정보 수정 (password)
+PATCH http://localhost:8000/api/v1/user-service/users/password
+Accept: application/json
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
@@ -65,6 +64,11 @@ Content-Type: application/json
   "checkNewPassword": "password#"
 }
 
+### 로그아웃
+POST http://localhost:8000/api/v1/user-service/auth/logout
+Authorization: Bearer {{auth_token}}
+
 ### 회원탈퇴
-DELETE http://localhost:8080/api/v1/users
+DELETE http://localhost:8000/api/v1/user-service/users
+Accept: application/json
 Authorization: Bearer {{auth_token}}

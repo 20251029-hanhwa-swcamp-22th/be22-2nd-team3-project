@@ -3,13 +3,10 @@ plugins {
     id 'org.springframework.boot' version '3.5.9'
     id 'io.spring.dependency-management' version '1.1.7'
 }
-ext {
-    springAiVersion = "1.1.2"
-}
 
 group = 'com.ohgiraffers'
 version = '0.0.1-SNAPSHOT'
-description = 'hw-22th-team-project'
+description = 'masroot'
 
 java {
     toolchain {
@@ -28,37 +25,11 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.15'
-    implementation 'org.modelmapper:modelmapper:3.2.5'
-    implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
-    implementation 'commons-io:commons-io:2.18.0'
-    implementation 'org.springframework.ai:spring-ai-starter-model-google-genai'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-
+    implementation 'org.springframework.boot:spring-boot-starter'
     compileOnly 'org.projectlombok:lombok'
-
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
     annotationProcessor 'org.projectlombok:lombok'
-
-    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.ai:spring-ai-bom:$springAiVersion"
-    }
 }
 
 tasks.named('test') {

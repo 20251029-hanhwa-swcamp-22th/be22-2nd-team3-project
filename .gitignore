@@ -1,8 +1,7 @@
 HELP.md
-NEWFEATURE.md
-application-dev.yml
-database_schema.sql
+**/application-dev.yml
 .claude
+
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -39,3 +38,4 @@ out/
 
 ### VS Code ###
 .vscode/
+/config-server/src/main/resources/application-local.yml
