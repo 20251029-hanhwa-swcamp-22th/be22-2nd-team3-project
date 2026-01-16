@@ -10,13 +10,13 @@ spring:
       server:
         webflux:
           routes:
-             # --- [main-service 라우팅 규칙] ---
-            - id: main-service
-              uri: lb://MAIN-SERVICE
+             # --- [notification-service 라우팅 규칙] ---
+            - id: notification-service
+              uri: lb://NOTIFICATION-SERVICE
               predicates:
-                - Path=/api/v1/main-service/**
+                - Path=/api/v1/notification-service/**
               filters:
-                - RewritePath=/api/v1/main-service/(?<segment>.*), /$\{segment}
+                - RewritePath=/api/v1/notification-service/(?<segment>.*), /$\{segment}
             # --- [user-service 라우팅 규칙] ---
             - id: user-service
               uri: lb://USER-SERVICE

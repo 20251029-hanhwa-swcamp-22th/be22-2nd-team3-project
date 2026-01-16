@@ -33,5 +33,9 @@ Authorization: Bearer {{auth_token}}
 ]
 
 ### 3. 내 알림 목록 조회
-GET http://localhost:8000/api/v1/ingredient-stock-service/api/v1/notification
+GET http://localhost:8000/api/v1/notification-service/notification
+Authorization: Bearer {{auth_token}}
+
+### 알림 읽음 처리
+GET http://localhost:8000/api/v1/notification-service/notification/17
 Authorization: Bearer {{auth_token}}
