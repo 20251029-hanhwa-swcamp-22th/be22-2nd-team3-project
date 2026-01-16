@@ -1,0 +1,72 @@
+# ***IngredientStock Package Structure***
+
+## command
+- ### application
+  - #### controller
+    - DisposalCommandController
+      - 폐기이력등록(POST): /api/v1/disposal
+    - IngredientStockCommandController
+      - 로그인유저 식재료 등록(POST): /api/v1/ingredient-stock
+      - 로그인유저 식재료 수정(PATCH): /api/v1/ingredient-stock
+      - 로그인유저 알림 필터링(POST): /api/v1/ingredient-stock/notification
+  - #### dto
+    - ##### request
+      - DisposalCreateRequest
+      - IngredientStockCreateRequest
+      - IngredientStockUpdateRequest
+    - ##### response
+      - DisposalCreateResponse
+      - IngredientStockCreateResponse
+      - IngredientStockUpdateResponse
+  - #### service
+    - DisposalCommandService
+      - createDisposal(): 폐기이력 저장
+    - IngredientStockCommandService
+      - registIngredientStock(): 로그인유저 식재료 저장
+      - updateIngredientStock(): 로그인유저 식재료 수정
+      - getIngredientStockList(): 로그인유저 식재료 필터링 후 notification에 저장
+- ### domain
+  - #### aggregate
+    - DisposalHistory(Entity)
+    - IngredientStock(Entity)
+  - #### repository
+    - DisposalDomainRepository
+      - save(DisposalHistory)
+    - IngredientStockDomainRepository
+      - save(IngredientStock)
+      - findByUser_UserNoAndIngredientStockNo(userNo,ingredientStockNo)
+      - findAllByUser_UserNo(userNo)
+  - #### service
+    - DisposalDomainService
+    - IngredientStockDomainService
+      - filterExpiredSoonStock(): 유통기한임박 필터 메서드
+      - filterLowStock(): 식재고소진임박 필터 메서드
+- ### infrastructure
+  - #### repository
+    - JpaDisposalDomainRepository(extends JpaRepository<>, DisposalDomainRepository)
+    - JpaIngredientStockDomainRepository(extends JpaRepository<>, IngredientStockDomainRepository)
+  - #### service
+
+---
+
+## query
+- ### controller
+  - DisposalQueryController
+    - 로그인유저 폐기이력 조회(GET): /api/v1/disposals
+  - IngredientStockQueryController
+    - 로그인유저 식재료정보 조회(GET): /api/v1/ingredient-stocks
+- ### dto
+  - #### request
+  - #### response
+    - DisposalHistoryResponse
+    - IngredientStockResponse
+- ### mapper
+  - DisposalMapper
+    - getAllDisposalHistoriesByUserNo(userNo)
+  - IngredientStockMapper
+    - getStocksByUserNo(userNo)
+- ### service
+  - DisposalQueryService
+    - getDisposalHistories(refreshToken)
+  - IngredientStockQueryService
+    - getIngredientStockList(refreshToken)

@@ -1,0 +1,54 @@
+# ***User Package Structure***
+
+# command
+- ## application
+  - UserAuthCommandController
+    - 로그인(POST): /api/v1/user/login
+    - 로그아웃(POST): /api/v1/user/logout
+  - UserCommandController
+    - 회원가입(POST): /api/v1/users
+    - 회원정보수정(email, phoneNum): PATCH /api/v1/users
+    - 회원정보수정(PATCH): PATCH /api/v1/users/password
+    - 회원탈퇴(DELETE) /api/v1/users
+- ## domain
+  - ### aggregate
+    - RefreshToken(Entity)
+    - User(Entity)
+  - ### repository
+    - UserAuthRepository
+      - save()
+      - deleteById()
+    - UserRepository
+      - save()
+      - findByUserId()
+      - existsByUserId()
+      - existsByNickname()
+      - existsByEmail()
+      - existsByPhoneNum()
+      - findByUserNo()
+  - ### service
+    - UserDomainService
+      - validateValue()
+- ## infrastructure
+  - ### repository
+    - JpaUserAuthRepository(extends JpaRepository<>, UserAuthRepository)
+    - JpaUserRepository(extends JpaRepository<>, UserRepository)
+  - ### service
+---
+# query
+- ## controller
+  - UserQueryController
+    - 회원정보조회(GET): /api/v1/users/{userId}
+    - 내정보조회(GET): /api/v1/user/myinfo
+- ## dto
+  - ### Request
+  - ### Response
+    - UserDetailResponse(UserDTO)
+    - UserDTO
+- ## mapper
+  - UserMapper
+    - selectUserByUserId(): return UserDTO
+- ## service
+  - UserQueryService
+    - getUser(String userId)
+    - getUserByToken(String refreshToken)
