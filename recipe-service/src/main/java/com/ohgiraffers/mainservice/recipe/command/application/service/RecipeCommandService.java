@@ -86,7 +86,6 @@ public class RecipeCommandService {
 		// 1. AI 추천 서비스 호출
 		RecommendRecipeResponse recipeRecommendation = recipeRecommendService.getRecipeRecommendation(request);
 
-		recipeRecommendation = RecommendRecipeResponse.createDummyResponse();
 		// 2. 추천 결과 저장용 엔티티 변환
 		RecommendRecipe recommendRecipe = RecommendRecipe.builder()
 			.userNo(Integer.parseInt(String.valueOf(userNo)))

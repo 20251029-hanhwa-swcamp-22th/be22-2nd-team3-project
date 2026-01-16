@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ohgiraffers.mainservice.notification.query.mapper.NotificationMapper">
+<mapper namespace="com.ohgiraffers.ingredientstockservice.notification.query.mapper.NotificationMapper">
 
     <resultMap id="NotificationResultMap"
-               type="com.ohgiraffers.mainservice.notification.query.dto.response.NotificationDTO">
+               type="com.ohgiraffers.ingredientstockservice.notification.query.dto.response.NotificationDTO">
         <id property="notificationNo" column="notification_no"/>
         <result property="userNo" column="user_no"/>
         <result property="notificationTypeNo" column="notification_type_no"/>
