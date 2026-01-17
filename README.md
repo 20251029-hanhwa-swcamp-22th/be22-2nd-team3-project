@@ -1,12 +1,12 @@
-# Empty the Fridge - MSA Project Review
+# 냉장고를 비워줘 - MSA Project Review
 
 **Review Date:** 2026-01-16
-**Reviewer:** Claude Opus 4.5
+**Reviewer:** Claude
 **Project:** Empty_the_fridge (masroot)
 
 ---
 
-## Executive Summary
+## 리뷰 요약
 
 This is a well-structured Microservices Architecture (MSA) project for a food inventory management and recipe recommendation application. The project demonstrates solid architectural foundations with proper cloud-native patterns, but requires improvements in testing, observability, and deployment readiness.
 
@@ -14,31 +14,31 @@ This is a well-structured Microservices Architecture (MSA) project for a food in
 
 ---
 
-## 1. Project Overview
+## 1. 프로젝트 개요
 
 | Attribute | Value |
 |-----------|-------|
-| **Architecture** | Microservices (MSA) |
-| **Language** | Java 17 (LTS) |
-| **Framework** | Spring Boot 3.5.9 |
-| **Cloud Stack** | Spring Cloud 2025.0.1 |
-| **Build Tool** | Gradle (multi-module) |
+| **아키텍쳐**  | Microservices (MSA) |
+| **언어**    | Java 17 (LTS) |
+| **프레임워크** | Spring Boot 3.5.9 |
+| **클라우드**  | Spring Cloud 2025.0.1 |
+| **빌드 도구** | Gradle (multi-module) |
 
-### Services Architecture
+### Micro Services 아키텍쳐
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      API Gateway (Port 8000)                     │
-│                   Spring Cloud Gateway + JWT                     │
+│                      API Gateway (Port 8000)                    │
+│                   Spring Cloud Gateway + JWT                    │
 └─────────────────────────────────────────────────────────────────┘
                                  │
         ┌────────────────────────┼────────────────────────┐
         │                        │                        │
         ▼                        ▼                        ▼
-┌───────────────┐    ┌───────────────────┐    ┌──────────────────┐
-│  User Service │    │ Ingredient Stock  │    │  Recipe Service  │
-│  (Auth/CRUD)  │    │    Service        │    │  (AI-Powered)    │
-└───────────────┘    └───────────────────┘    └──────────────────┘
+┌───────────────┐       ┌───────────────────┐    ┌──────────────────┐
+│  User Service │       │ Ingredient Stock  │    │  Recipe Service  │
+│  (Auth/CRUD)  │       │    Service        │    │  (AI-Powered)    │
+└───────────────┘       └───────────────────┘    └──────────────────┘
         │                        │                        │
         └────────────────────────┼────────────────────────┘
                                  │
@@ -57,9 +57,9 @@ This is a well-structured Microservices Architecture (MSA) project for a food in
 
 ---
 
-## 2. Technology Stack Assessment
+## 2. 기술 스택
 
-### Core Technologies
+### 핵심 기술
 
 | Component | Technology | Version | Assessment |
 |-----------|------------|---------|------------|
@@ -76,15 +76,15 @@ This is a well-structured Microservices Architecture (MSA) project for a food in
 
 ---
 
-## 3. Strengths
+## 3. 강점
 
 ### 3.1 Architecture Design
-- **Clear Service Boundaries:** Each microservice has a well-defined responsibility
-- **CQRS Pattern:** Properly implemented with `/command` and `/query` separation
-- **DDD Structure:** Domain-driven package organization with `application`, `domain`, and `infrastructure` layers
-- **Gateway Pattern:** Centralized routing, authentication, and circuit breaking
+- **깔끔한 서비스 구조:** Each microservice has a well-defined responsibility
+- **CQRS 패턴:** Properly implemented with `/command` and `/query` separation
+- **DDD 구조:** Domain-driven package organization with `application`, `domain`, and `infrastructure` layers
+- **게이트웨이 패턴:** Centralized routing, authentication, and circuit breaking
 
-### 3.2 Security Implementation
+### 3.2 보안 Implementation
 - JWT with access (30min) and refresh (7 days) tokens
 - Refresh tokens stored as HttpOnly secure cookies
 - BCrypt password hashing
